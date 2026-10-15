@@ -45,7 +45,7 @@ describe('live power balance', () => {
   it.each(['unavailable','unknown','missing'])('treats a %s consumer as zero and keeps other consumption calculated', state => {
     const h = hass({solar:1000,car:200,...(state === 'missing' ? {} : {oven:state})});
     const result = calculate(h,{type:config.type,solar_entity:'solar',consumers:config.consumers,sort_by_power:true});
-    expect(result.consumers.find(c => c.entity === 'oven')?.power).toBe(0);
+    expect(result.consumers.find(c => c.entity === 'oven')).toMatchObject({power:0,unavailable:true});
     expect(result.consumers[0].entity).toBe('car');
     expect(result.home).toBe(1000);
     expect(result.other).toBe(800);

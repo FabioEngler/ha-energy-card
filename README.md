@@ -7,20 +7,23 @@ An animated, responsive Home Assistant Lovelace card for **live power**. See sol
 - Animated directional flows with speed reflecting current power.
 - Automatic home consumption: **solar + grid import + battery discharge − grid export − battery charge**.
 - Separate import/export and charge/discharge sensors, or signed sensors with configurable direction.
-- Optional battery state of charge.
+- Larger home total with a segmented ring showing the estimated solar/grid/battery mix.
+- Battery state of charge and a charge-level icon, glowing green when charging and red when discharging.
 - Consumer list with power, percentage, optional automatic sorting, and untracked “Other consumption”. Designed for 5–10 consumers; no hard limit.
 - Estimated household solar/grid/battery source mix. Sources are allocated proportionally across the home, export, and charging loads. This is an estimate, not measured physical routing or battery provenance.
 - Visual editor for sensor selection, labels, icons, ordering, animation, and sorting.
+- Consumer entity icons, clearer power values, small shares displayed as `<1%`, and offline badges. Offline consumers still count as 0 W.
+- Tap a consumer or source to open Home Assistant's entity details. Source nodes also support Enter and Space for keyboard access.
 - W and kW sensors supported. Energy sensors in kWh are not supported.
 
 ## Install with HACS
 
-The repository includes the built `dist/ha-energy-card.js` file, so HACS can install directly from the default branch without a tagged release. Tagged releases also provide the same file as a downloadable asset.
+Install the latest versioned release for normal HACS update notifications. Each release includes the built `ha-energy-card.js` asset. The repository also includes `dist/ha-energy-card.js` for development installs from `main`.
 
 1. Open **HACS** in Home Assistant.
 2. Open the three-dot menu → **Custom repositories**.
 3. Add `https://github.com/FabioEngler/ha-energy-card` and choose **Dashboard** (called **Lovelace** or **Plugin** in some HACS versions).
-4. Find **Energy Flow Card**, download it, and reload your browser.
+4. Find **Energy Flow Card**, download the latest release, and reload your browser.
 5. Check **Settings → Dashboards → Resources**. HACS normally registers `/hacsfiles/ha-energy-card/ha-energy-card.js` as a **JavaScript module**. If it does not, add that resource manually. You may need Advanced Mode enabled in your Home Assistant profile to see Resources.
 6. Edit a dashboard → **Add card** → search for **Energy Flow Card**. Select your sensors in the visual editor.
 
@@ -28,22 +31,30 @@ If the card is not listed, refresh the browser cache and confirm the resource UR
 
 ### Updating and animation settings
 
-To install a change from `main`, open Energy Flow Card in HACS, choose **Redownload**, select the default branch, and refresh the Home Assistant browser or companion app. If an older version remains visible, clear the frontend cache and reload.
+HACS offers updates when a newer release is available. If you previously installed `main`, open Energy Flow Card in HACS, choose **Redownload**, and select the latest version (starting with **v0.2.0**) to switch to versioned releases. Refresh the Home Assistant browser or companion app afterward. If an older version remains visible, clear the frontend cache and reload. Development changes can still be installed by selecting `main` instead of a release.
 
 In the visual editor, **Flow animation** offers **Follow device preference**, **Always animate**, and **Off**. The default follows your device's reduced motion preference. Choose **Always animate** to enable moving dots even on devices with reduced motion enabled. Dots move continuously without waiting for sensor updates; their direction follows import/export and charge/discharge. Zero or unavailable flows remain still.
 
 In YAML, `animation: true` always animates, `animation: false` disables motion, and omitting `animation` follows the device preference.
 
-### Publishing the first release (repository owner)
+### Publishing releases (repository owner)
 
-Commit and push the project to GitHub. Then create and push a tag, for example:
+Update the package version, run tests, rebuild, and commit the source and bundle together. Then push a matching tag. For example, to publish v0.2.0:
 
 ```sh
-git tag v0.1.0
-git push origin v0.1.0
+git tag v0.2.0
+git push origin v0.2.0
 ```
 
-The **Build and release** GitHub Actions workflow runs tests and builds the card, then attaches `ha-energy-card.js` to the tag's GitHub release. Confirm that the release and asset exist before selecting that release in HACS. Release creation requires GitHub Actions to be enabled with the workflow's contents-write permission.
+The **Build and release** GitHub Actions workflow checks the version against the tag, runs tests, rebuilds the card, and checks the committed bundle before attaching `ha-energy-card.js` to a published GitHub release. Confirm that the release and asset exist before selecting that release in HACS. Release creation requires GitHub Actions to be enabled with the workflow's contents-write permission.
+
+## Interactions and status
+
+Tap a consumer to open its entity's native Home Assistant more-info dialog, including when it is offline. Consumer icons follow the entity's Home Assistant icon unless overridden in the visual editor.
+
+Solar opens its production entity. Grid and battery open the combined sensor, or the sensor for the current direction when separate sensors are configured: import/export for grid and discharge/charge for battery. At idle, the first configured power sensor is used. Home and Other consumption are calculated values and do not open an entity dialog.
+
+Battery icons follow state of charge when configured. Charging above 1 W glows green; discharging above 1 W glows red. Idle or unavailable batteries have no glow. Offline consumer badges indicate that no usable reading is available; the row and totals continue to use 0 W until readings recover.
 
 ## Sensor setup
 

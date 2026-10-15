@@ -37,7 +37,10 @@ export function calculate(hass: Hass, config: CardConfig) {
   const home = balance === null ? null : Math.max(0, balance);
   // Consumers can go offline (for example when a smart plug is switched off).
   // Treat their missing readings as zero without invalidating the home remainder.
-  let consumers = (config.consumers ?? []).map(c => ({ ...c, power: watts(hass, c.entity) ?? 0 }));
+  let consumers = (config.consumers ?? []).map(c => {
+    const power = watts(hass, c.entity);
+    return { ...c, power: power ?? 0, unavailable: power === null };
+  });
   if (config.sort_by_power) consumers = [...consumers].sort((a, b) => b.power - a.power);
   const measured = consumers.reduce((sum, c) => sum + Math.max(0, c.power), 0);
   const other = home === null ? null : Math.max(0, home - measured);
