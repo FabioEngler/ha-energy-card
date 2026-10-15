@@ -15,9 +15,7 @@ An animated, responsive Home Assistant Lovelace card for **live power**. See sol
 
 ## Install with HACS
 
-**The repository owner must publish a release first.** This initial source checkout is not yet a published HACS release. The included release workflow creates the required JavaScript asset when a `v*` tag is pushed.
-
-Once a release exists:
+The repository includes the built `dist/ha-energy-card.js` file, so HACS can install directly from the default branch without a tagged release. Tagged releases also provide the same file as a downloadable asset.
 
 1. Open **HACS** in Home Assistant.
 2. Open the three-dot menu → **Custom repositories**.
@@ -37,7 +35,7 @@ git tag v0.1.0
 git push origin v0.1.0
 ```
 
-The **Build and release** GitHub Actions workflow runs tests and builds the card, then attaches `ha-energy-card.js` to the tag's GitHub release. Confirm that the release and asset exist before adding the custom repository in HACS. Release creation requires GitHub Actions to be enabled with the workflow's contents-write permission.
+The **Build and release** GitHub Actions workflow runs tests and builds the card, then attaches `ha-energy-card.js` to the tag's GitHub release. Confirm that the release and asset exist before selecting that release in HACS. Release creation requires GitHub Actions to be enabled with the workflow's contents-write permission.
 
 ## Sensor setup
 
@@ -107,4 +105,4 @@ npm run build
 
 `npm run dev` rebuilds the bundle on changes; copy the rebuilt bundle to your test Home Assistant instance and refresh the dashboard. No backend service, credentials, or separate runtime is required for the card. Home Assistant supplies entity updates through its `hass` property.
 
-The build produces one self-contained ES module at `dist/ha-energy-card.js`. Tests cover power balance, units, signed sensors, missing readings, source allocation, and consumer sorting. A real Home Assistant installation is still needed to validate integration and entity selection against your sensors.
+The build produces one self-contained ES module at `dist/ha-energy-card.js`. Commit the rebuilt bundle whenever the card changes; CI checks that the committed bundle matches the source. Tests cover power balance, units, signed sensors, missing readings, source allocation, and consumer sorting. A real Home Assistant installation is still needed to validate integration and entity selection against your sensors.
