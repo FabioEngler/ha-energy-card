@@ -24,7 +24,7 @@ const t=globalThis,i$1=t=>t,s$1=t.trustedTypes,e=s$1?s$1.createPolicy("lit-html"
  * SPDX-License-Identifier: BSD-3-Clause
  */const s=globalThis;class i extends y$1{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0;}createRenderRoot(){const t=super.createRenderRoot();return this.renderOptions.renderBefore??=t.firstChild,t}update(t){const r=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=D(r,this.renderRoot,this.renderOptions);}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(true);}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(false);}render(){return E}}i._$litElement$=true,i["finalized"]=true,s.litElementHydrateSupport?.({LitElement:i});const o=s.litElementPolyfillSupport;o?.({LitElement:i});(s.litElementVersions??=[]).push("4.2.2");
 
-// All calculations use watts. Invalid or non-power entities remain unknown, never zero.
+// All calculations use watts. Source readings must remain unknown when invalid.
 function watts(hass, entity) {
     if (!entity)
         return 0;
@@ -58,13 +58,14 @@ function calculate(hass, config) {
     const battery = flow(hass, config.battery);
     const balance = solar === null || !grid || !battery ? null : solar + grid.incoming + battery.incoming - grid.outgoing - battery.outgoing;
     const home = balance === null ? null : Math.max(0, balance);
-    let consumers = (config.consumers ?? []).map(c => ({ ...c, power: watts(hass, c.entity) }));
+    // Consumers can go offline (for example when a smart plug is switched off).
+    // Treat their missing readings as zero without invalidating the home remainder.
+    let consumers = (config.consumers ?? []).map(c => ({ ...c, power: watts(hass, c.entity) ?? 0 }));
     if (config.sort_by_power)
-        consumers = [...consumers].sort((a, b) => (b.power ?? -Infinity) - (a.power ?? -Infinity));
-    const known = consumers.every(c => c.power !== null);
-    const measured = consumers.reduce((sum, c) => sum + Math.max(0, c.power ?? 0), 0);
-    const other = home === null || !known ? null : Math.max(0, home - measured);
-    const mismatch = balance !== null && (balance < -1 || (known && measured > balance + 1));
+        consumers = [...consumers].sort((a, b) => b.power - a.power);
+    const measured = consumers.reduce((sum, c) => sum + Math.max(0, c.power), 0);
+    const other = home === null ? null : Math.max(0, home - measured);
+    const mismatch = balance !== null && (balance < -1 || measured > balance + 1);
     const supply = (solar ?? 0) + (grid?.incoming ?? 0) + (battery?.incoming ?? 0);
     // Proportional allocation: the same source mix feeds home, charging, and export.
     const sources = home === null ? [] : [
@@ -217,7 +218,7 @@ class EnergyFlowCard extends i {
         ${m.consumers.map(device => this.consumer(device.name || String(this.hass.states[device.entity]?.attributes.friendly_name || device.entity), device.icon || 'mdi:power-plug-outline', device.power, m.home))}
         ${this.consumer('Other consumption', 'mdi:dots-horizontal', m.other, m.home)}
         ${m.mismatch ? b `<p class="warning" role="status">Measurements do not balance. Check sensor directions, overlapping consumers, and update timing.</p>` : A}
-        ${m.home === null || m.consumers.some(d => d.power === null) ? b `<p class="warning" role="status">Some sensors are unavailable or do not report W/kW. Totals that depend on them are unavailable.</p>` : A}
+        ${m.home === null ? b `<p class="warning" role="status">Some source sensors are unavailable or do not report W/kW. Totals that depend on them are unavailable.</p>` : A}
       </section>
     </ha-card>`;
     }

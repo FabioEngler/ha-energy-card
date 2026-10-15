@@ -6,7 +6,7 @@ export interface CardConfig {
   type: string; title?: string; solar_entity?: string; grid?: FlowConfig; battery?: FlowConfig;
   battery_soc_entity?: string; consumers?: Consumer[]; sort_by_power?: boolean; animation?: boolean;
 }
-// All calculations use watts. Invalid or non-power entities remain unknown, never zero.
+// All calculations use watts. Source readings must remain unknown when invalid.
 export function watts(hass: Hass, entity?: string): number | null {
   if (!entity) return 0;
   const s = hass.states[entity];
@@ -35,12 +35,13 @@ export function calculate(hass: Hass, config: CardConfig) {
   const battery = flow(hass, config.battery);
   const balance = solar === null || !grid || !battery ? null : solar + grid.incoming + battery.incoming - grid.outgoing - battery.outgoing;
   const home = balance === null ? null : Math.max(0, balance);
-  let consumers = (config.consumers ?? []).map(c => ({ ...c, power: watts(hass, c.entity) }));
-  if (config.sort_by_power) consumers = [...consumers].sort((a, b) => (b.power ?? -Infinity) - (a.power ?? -Infinity));
-  const known = consumers.every(c => c.power !== null);
-  const measured = consumers.reduce((sum, c) => sum + Math.max(0, c.power ?? 0), 0);
-  const other = home === null || !known ? null : Math.max(0, home - measured);
-  const mismatch = balance !== null && (balance < -1 || (known && measured > balance + 1));
+  // Consumers can go offline (for example when a smart plug is switched off).
+  // Treat their missing readings as zero without invalidating the home remainder.
+  let consumers = (config.consumers ?? []).map(c => ({ ...c, power: watts(hass, c.entity) ?? 0 }));
+  if (config.sort_by_power) consumers = [...consumers].sort((a, b) => b.power - a.power);
+  const measured = consumers.reduce((sum, c) => sum + Math.max(0, c.power), 0);
+  const other = home === null ? null : Math.max(0, home - measured);
+  const mismatch = balance !== null && (balance < -1 || measured > balance + 1);
   const supply = (solar ?? 0) + (grid?.incoming ?? 0) + (battery?.incoming ?? 0);
   // Proportional allocation: the same source mix feeds home, charging, and export.
   const sources = home === null ? [] : [

@@ -28,6 +28,22 @@ describe('card and editor integration',()=>{
     expect(card.shadowRoot!.textContent).toContain('800 W');
     expect(card.shadowRoot!.textContent).not.toContain('2.50 kW');
   });
+  it('shows an unavailable consumer as zero and recalculates the remainder when it recovers',async()=>{
+    const card=document.createElement('energy-flow-card') as Card;
+    card.setConfig({type:'custom:energy-flow-card',solar_entity:'solar',consumers:[{entity:'device',name:'Pool'},{entity:'washer',name:'Washing machine'}]});
+    const states={solar:{state:'372',attributes:{unit_of_measurement:'W'}},washer:{state:'1',attributes:{unit_of_measurement:'W'}}};
+    card.hass={states:{...states,device:{state:'unavailable',attributes:{unit_of_measurement:'W'}}}};
+    document.body.append(card);await card.updateComplete;
+    const rows=()=>Array.from(card.shadowRoot!.querySelectorAll('.consumer')).map(el=>el.textContent);
+    expect(rows()[0]).toContain('0 W');
+    expect(rows()[0]).toContain('0%');
+    expect(rows()[2]).toContain('371 W');
+    expect(card.shadowRoot!.querySelector('[role="status"]')).toBeNull();
+    card.hass={states:{...states,device:{state:'100',attributes:{unit_of_measurement:'W'}}}};
+    await card.updateComplete;
+    expect(rows()[0]).toContain('100 W');
+    expect(rows()[2]).toContain('271 W');
+  });
   it('keeps configured labels as text rather than markup',async()=>{
     const card=document.createElement('energy-flow-card') as Card;
     card.setConfig({type:'custom:energy-flow-card',title:'<img src=x>',solar_entity:'solar'});

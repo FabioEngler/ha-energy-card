@@ -42,8 +42,14 @@ describe('live power balance', () => {
     expect(calculate(h,config).consumers[0].entity).toBe('oven');
     expect(calculate(h,{...config,sort_by_power:true}).consumers[0].entity).toBe('car');
   });
-  it('leaves other consumption unknown when a consumer is unavailable', () => {
-    expect(calculate(hass({solar:1000,oven:'unknown'}),{type:config.type,solar_entity:'solar',consumers:[{entity:'oven'}]}).other).toBeNull();
+  it.each(['unavailable','unknown','missing'])('treats a %s consumer as zero and keeps other consumption calculated', state => {
+    const h = hass({solar:1000,car:200,...(state === 'missing' ? {} : {oven:state})});
+    const result = calculate(h,{type:config.type,solar_entity:'solar',consumers:config.consumers,sort_by_power:true});
+    expect(result.consumers.find(c => c.entity === 'oven')?.power).toBe(0);
+    expect(result.consumers[0].entity).toBe('car');
+    expect(result.home).toBe(1000);
+    expect(result.other).toBe(800);
+    expect(result.mismatch).toBe(false);
   });
   it('supports absent sources and flags a negative power balance', () => {
     const result = calculate(hass({grid:-500}),{type:config.type,grid:{entity:'grid'}});

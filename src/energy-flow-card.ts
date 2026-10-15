@@ -65,7 +65,7 @@ class EnergyFlowCard extends LitElement {
         ${m.consumers.map(device => this.consumer(device.name || String(this.hass.states[device.entity]?.attributes.friendly_name || device.entity), device.icon || 'mdi:power-plug-outline', device.power, m.home))}
         ${this.consumer('Other consumption', 'mdi:dots-horizontal', m.other, m.home)}
         ${m.mismatch ? html`<p class="warning" role="status">Measurements do not balance. Check sensor directions, overlapping consumers, and update timing.</p>` : nothing}
-        ${m.home === null || m.consumers.some(d => d.power === null) ? html`<p class="warning" role="status">Some sensors are unavailable or do not report W/kW. Totals that depend on them are unavailable.</p>` : nothing}
+        ${m.home === null ? html`<p class="warning" role="status">Some source sensors are unavailable or do not report W/kW. Totals that depend on them are unavailable.</p>` : nothing}
       </section>
     </ha-card>`;
   }

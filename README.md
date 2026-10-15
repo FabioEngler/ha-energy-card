@@ -47,7 +47,7 @@ The **Build and release** GitHub Actions workflow runs tests and builds the card
 
 ## Sensor setup
 
-Configure only sources you have; absent sources count as zero. A configured but unavailable, nonnumeric, or unsupported-unit sensor makes dependent totals unavailable.
+Configure only sources you have; absent sources count as zero. A configured but unavailable, nonnumeric, or unsupported-unit source sensor makes dependent totals unavailable. Consumer readings that are unavailable, unknown, missing, or invalid are treated as 0 W.
 
 - **Solar:** positive generation power.
 - **Grid, separate:** positive import and export values.
@@ -59,7 +59,7 @@ Configure only sources you have; absent sources count as zero. A configured but 
 
 Use solar and battery readings on the same electrical measurement boundary, ideally AC-side power. Hybrid inverter totals that already include battery discharge should not be combined with that discharge a second time. Inverter losses and unsynchronized updates can create temporary measurement mismatches.
 
-The home total does not require a dedicated sensor. Other consumption is calculated home power minus the configured consumers. Negative balances are clamped to zero and flagged. Unknown consumer readings leave Other consumption unavailable. Source percentages for individual consumers are deliberately omitted.
+The home total does not require a dedicated sensor. Other consumption is calculated home power minus the configured consumers. Negative balances are clamped to zero and flagged. Unavailable consumers display 0 W and contribute zero to the calculation, so Other consumption stays available while the home total is known. Normal readings resume automatically when a consumer comes back online. Source percentages for individual consumers are deliberately omitted.
 
 ## YAML example
 
