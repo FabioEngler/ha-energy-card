@@ -51,4 +51,21 @@ describe('card and editor integration',()=>{
     forms[0].dispatchEvent(new CustomEvent('value-changed',{detail:{value:{entity:'sensor.grid',invert:true}}}));
     expect(changed?.grid).toEqual({entity:'sensor.grid',invert:true});
   });
+  it('saves explicit motion preferences and can restore the device default without losing sensors',async()=>{
+    const editor=document.createElement('energy-flow-card-editor') as Card;
+    editor.setConfig({type:'custom:energy-flow-card',solar_entity:'solar',animation:false});
+    editor.hass=hass;document.body.append(editor);await editor.updateComplete;
+    let changed: CardConfig | undefined;
+    editor.addEventListener('config-changed',(e:Event)=>{changed=(e as CustomEvent).detail.config;});
+    const form=editor.shadowRoot!.querySelector('ha-form')!;
+    expect((form as unknown as {data:{animation_mode:string}}).data.animation_mode).toBe('off');
+    for(const [mode,expected] of [['on',true],['off',false],['auto',undefined]] as const){
+      form.dispatchEvent(new CustomEvent('value-changed',{detail:{value:{animation_mode:mode}}}));
+      await editor.updateComplete;
+      expect(changed?.animation).toBe(expected);
+      expect(changed?.solar_entity).toBe('solar');
+      expect(changed).not.toHaveProperty('animation_mode');
+      if(mode==='auto') expect(changed).not.toHaveProperty('animation');
+    }
+  });
 });

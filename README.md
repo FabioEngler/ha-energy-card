@@ -1,6 +1,6 @@
 # Energy Flow Card
 
-An animated, responsive Home Assistant Lovelace card for **live power**. See solar, grid, battery, and calculated home consumption alongside a list of individual consumers. Follows your Home Assistant theme and respects reduced motion preferences.
+An animated, responsive Home Assistant Lovelace card for **live power**. See solar, grid, battery, and calculated home consumption alongside a list of individual consumers. Follows your Home Assistant theme and, by default, your device's reduced motion preference.
 
 ## Features
 
@@ -25,6 +25,14 @@ The repository includes the built `dist/ha-energy-card.js` file, so HACS can ins
 6. Edit a dashboard → **Add card** → search for **Energy Flow Card**. Select your sensors in the visual editor.
 
 If the card is not listed, refresh the browser cache and confirm the resource URL loads. You can also add a Manual card with `type: custom:energy-flow-card` and switch to the visual editor.
+
+### Updating and animation settings
+
+To install a change from `main`, open Energy Flow Card in HACS, choose **Redownload**, select the default branch, and refresh the Home Assistant browser or companion app. If an older version remains visible, clear the frontend cache and reload.
+
+In the visual editor, **Flow animation** offers **Follow device preference**, **Always animate**, and **Off**. The default follows your device's reduced motion preference. Choose **Always animate** to enable moving dots even on devices with reduced motion enabled. Dots move continuously without waiting for sensor updates; their direction follows import/export and charge/discharge. Zero or unavailable flows remain still.
+
+In YAML, `animation: true` always animates, `animation: false` disables motion, and omitting `animation` follows the device preference.
 
 ### Publishing the first release (repository owner)
 

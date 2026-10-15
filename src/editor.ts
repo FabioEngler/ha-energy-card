@@ -40,7 +40,15 @@ class EnergyFlowEditor extends LitElement {
   render() {
     if (!this.hass || !this.config) return nothing;
     return html`<div class="editor">
-      ${this.form([{name:'title',label:'Title',selector:{text:{}}},this.entity('solar_entity','Solar production'),this.entity('battery_soc_entity','Battery state of charge',true),{name:'animation',label:'Animate power flows',selector:{boolean:{}}},{name:'sort_by_power',label:'Sort consumers by current power',selector:{boolean:{}}}],{animation:true,...this.config},data => this.updateConfig(data))}
+      ${this.form([{name:'title',label:'Title',selector:{text:{}}},this.entity('solar_entity','Solar production'),this.entity('battery_soc_entity','Battery state of charge',true),{name:'animation_mode',label:'Flow animation',selector:{select:{options:[{value:'auto',label:'Follow device preference'},{value:'on',label:'Always animate'},{value:'off',label:'Off'}]}}},{name:'sort_by_power',label:'Sort consumers by current power',selector:{boolean:{}}}],{...this.config,animation_mode:this.config.animation === true ? 'on' : this.config.animation === false ? 'off' : 'auto'},data => {
+        const { animation_mode, ...config } = data;
+        const next = { ...this.config, ...config };
+        if (animation_mode === 'auto') delete next.animation;
+        else next.animation = animation_mode === 'on';
+        this.config = next;
+        this.dispatchEvent(new CustomEvent('config-changed',{detail:{config:next},bubbles:true,composed:true}));
+      })}
+      <p>Follow device preference respects reduced motion. Always animate enables moving flow dots even when reduced motion is enabled on this device. Idle flows remain still.</p>
       ${this.source('grid')}${this.source('battery')}
       <h3>Consumers</h3><p>Choose individual, non-overlapping power sensors. Home consumption is calculated automatically.</p>
       ${(this.config.consumers ?? []).map((device,index) => html`<div class="consumer">
