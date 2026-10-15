@@ -1,6 +1,7 @@
 import { LitElement, html, css, svg, nothing } from 'lit';
 import { calculate, formatPower, type CardConfig, type Hass } from './power';
 import { batteryAppearance, formatShare, stateOfCharge } from './presentation';
+import { BalanceGracePeriod } from './balance';
 import './editor';
 
 interface NodeOptions {
@@ -16,11 +17,41 @@ class EnergyFlowCard extends LitElement {
   static properties = { hass: { attribute: false }, config: { state: true } };
   declare hass: Hass;
   declare config: CardConfig;
+  private balanceGrace = new BalanceGracePeriod();
+  private reading?: ReturnType<BalanceGracePeriod['update']>;
+  private balanceTimer?: ReturnType<typeof setTimeout>;
+  private clearBalanceTimer() {
+    if (this.balanceTimer !== undefined) clearTimeout(this.balanceTimer);
+    this.balanceTimer = undefined;
+  }
+  connectedCallback() {
+    this.balanceGrace.reset();
+    super.connectedCallback();
+    this.requestUpdate();
+  }
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.clearBalanceTimer();
+    this.balanceGrace.reset();
+  }
+  protected willUpdate() {
+    this.clearBalanceTimer();
+    if (!this.hass || !this.config) return;
+    this.reading = this.balanceGrace.update(calculate(this.hass, this.config), Date.now());
+    if (this.reading.recheckIn > 0 && this.isConnected) {
+      this.balanceTimer = setTimeout(() => {
+        this.balanceTimer = undefined;
+        this.requestUpdate();
+      }, this.reading.recheckIn);
+    }
+  }
   static getConfigElement() { return document.createElement('energy-flow-card-editor'); }
   static getStubConfig() { return { type: 'custom:energy-flow-card', title: 'Live energy', consumers: [] }; }
   setConfig(config: CardConfig) {
     if (!config || typeof config !== 'object') throw new Error('A card configuration is required');
     if (config.consumers && (!Array.isArray(config.consumers) || config.consumers.some(c => !c.entity))) throw new Error('Each consumer needs an entity');
+    this.clearBalanceTimer();
+    this.balanceGrace.reset();
     this.config = { ...config, consumers: config.consumers ?? [] };
   }
   getCardSize() { return 5 + (this.config?.consumers?.length ?? 0); }
@@ -64,9 +95,9 @@ class EnergyFlowCard extends LitElement {
     </g>`;
   }
   render() {
-    if (!this.hass || !this.config) return nothing;
+    if (!this.hass || !this.config || !this.reading) return nothing;
     const c = this.config;
-    const m = calculate(this.hass, c);
+    const m = this.reading;
     const configured = Boolean(c.solar_entity || c.grid?.entity || c.grid?.import_entity || c.grid?.export_entity || c.battery?.entity || c.battery?.import_entity || c.battery?.export_entity);
     if (!configured) return html`<ha-card><div class="empty">Select your solar, grid, and battery sensors in the visual editor to get started.</div></ha-card>`;
     const batteryPresent = Boolean(c.battery?.entity || c.battery?.import_entity || c.battery?.export_entity);
@@ -77,7 +108,7 @@ class EnergyFlowCard extends LitElement {
     const gridEntity = c.grid?.entity || (gridNet !== null && gridNet < 0 ? c.grid?.export_entity || c.grid?.import_entity : c.grid?.import_entity || c.grid?.export_entity);
     const batteryEntity = c.battery?.entity || (batteryNet !== null && batteryNet < -1 ? c.battery?.export_entity || c.battery?.import_entity : c.battery?.import_entity || c.battery?.export_entity) || c.battery_soc_entity;
     return html`<ha-card>
-      <header><div><span class="eyebrow">POWER FLOW</span><h2>${c.title || 'Live energy'}</h2></div><span class="live"><i></i> Live</span></header>
+      <header><div><span class="eyebrow">POWER FLOW</span><h2>${c.title || 'Live energy'}</h2></div><span class=${`live ${m.updating ? 'updating' : ''}`}><i></i>${m.updating ? 'Updating' : 'Live'}</span></header>
       <svg class=${`diagram motion-${c.animation === true ? 'on' : c.animation === false ? 'off' : 'auto'}`} viewBox="0 0 460 400" role="group" aria-label="Live power flow: solar, grid, battery, and home meet at a shared junction">
         ${this.connection('solar-flow', 'M230 115 V192', m.solar, 'var(--ef-solar)')}
         ${this.connection('grid-flow', 'M113 192 H230', gridNet, 'var(--ef-grid)')}
@@ -86,21 +117,21 @@ class EnergyFlowCard extends LitElement {
         <circle cx="230" cy="192" r="4" class="junction"/>
         ${this.node(230, 72, 'mdi:solar-power-variant', 'Solar', formatPower(m.solar), 'var(--ef-solar)', 'Production', true, { entity: c.solar_entity })}
         ${this.node(70, 192, 'mdi:transmission-tower', 'Grid', formatPower(gridNet === null ? null : Math.abs(gridNet)), 'var(--ef-grid)', gridNet === null ? 'Unavailable' : gridNet < 0 ? 'Exporting' : gridNet > 0 ? 'Importing' : 'Idle', false, { entity: gridEntity })}
-        ${this.node(390, 192, 'mdi:home-lightning-bolt-outline', 'Home', formatPower(m.home), 'var(--ef-home)', 'Calculated', false, { home: true, ring: m.sources, homePower: m.home })}
+        ${this.node(390, 192, 'mdi:home-lightning-bolt-outline', 'Home', formatPower(m.home), 'var(--ef-home)', m.updating ? 'Updating' : 'Calculated', false, { home: true, ring: m.sources, homePower: m.home })}
         ${batteryPresent ? this.node(230, 312, battery.icon, 'Battery', formatPower(batteryNet === null ? null : Math.abs(batteryNet)), 'var(--ef-battery)', soc !== null ? `${Math.round(soc)}%` : c.battery_soc_entity ? 'SoC —' : undefined, false, { entity: batteryEntity, batteryStatus: battery.status, statusLabel: battery.label }) : nothing}
       </svg>
       <section class="mix" aria-label="Estimated household power sources">
-        <div class="section-title">Home power sources <span>Estimated mix</span></div>
+        <div class="section-title">Home power sources <span>${m.updating ? 'Updating' : 'Estimated mix'}</span></div>
         <div class="mix-bar">${m.sources.map(s => html`<div style=${`width:${m.home ? s.power / m.home * 100 : 0}%;background:${s.color}`} title=${`${s.name}: ${formatPower(s.power)}`}></div>`)}</div>
         <div class="legend">${m.sources.map(s => html`<span><i style=${`background:${s.color}`}></i>${s.name} <b>${formatPower(s.power)}</b></span>`)}</div>
-        <p class="hint">Sources allocated proportionally after export and battery charging.</p>
+        <p class="hint" role=${m.updating ? 'status' : nothing}>${m.updating ? m.home === null ? 'Waiting for source readings to balance.' : 'Showing the last balanced home total and source mix while readings catch up.' : 'Sources allocated proportionally after export and battery charging.'}</p>
       </section>
       <section class="consumers">
         <div class="section-title">Consumers <span>${m.consumers.length} ${m.consumers.length === 1 ? 'device' : 'devices'}</span></div>
         ${m.consumers.map(device => this.consumer(device.name || String(this.hass.states[device.entity]?.attributes.friendly_name || device.entity), device.power, m.home, { entity: device.entity, icon: device.icon, offline: device.unavailable }))}
         ${this.consumer('Other consumption', m.other, m.home, { icon: 'mdi:dots-horizontal' })}
         ${m.mismatch ? html`<p class="warning" role="status">Measurements do not balance. Check sensor directions, overlapping consumers, and update timing.</p>` : nothing}
-        ${m.home === null ? html`<p class="warning" role="status">Some source sensors are unavailable or do not report W/kW. Totals that depend on them are unavailable.</p>` : nothing}
+        ${m.home === null && !m.updating ? html`<p class="warning" role="status">Some source sensors are unavailable or do not report W/kW. Totals that depend on them are unavailable.</p>` : nothing}
       </section>
     </ha-card>`;
   }
@@ -121,6 +152,7 @@ class EnergyFlowCard extends LitElement {
     header { display:flex;align-items:center;justify-content:space-between;padding:24px 24px 0; }
     .eyebrow { font-size:10px;letter-spacing:2px;color:var(--secondary-text-color); } h2 { margin:5px 0;font-size:22px;font-weight:600; }
     .live { font-size:12px;color:var(--secondary-text-color);display:flex;gap:7px;align-items:center; }.live i { width:6px;height:6px;background:var(--ef-battery);border-radius:50%; }
+    .live.updating i { background:var(--warning-color,#e7ac55); }
     .diagram { width:100%;display:block;overflow:visible;margin:8px auto 20px;max-width:540px; }
     .node { fill:var(--ha-card-background,var(--card-background-color,#191c24));stroke-width:2; }
     .home-node .value { font-size:20px;font-weight:750; }.home-node .unavailable-value { font-size:13px; }.home-node .node { stroke-width:1.5; }

@@ -72,6 +72,9 @@ Use solar and battery readings on the same electrical measurement boundary, idea
 
 The home total does not require a dedicated sensor. Other consumption is calculated home power minus the configured consumers. Negative balances are clamped to zero and flagged. Unavailable consumers display 0 W and contribute zero to the calculation, so Other consumption stays available while the home total is known. Normal readings resume automatically when a consumer comes back online. Source percentages for individual consumers are deliberately omitted.
 
+Solar, grid, and battery sensors can update at different times. When their readings temporarily do not balance, the card allows a **three-second grace period**: the last balanced home total and source mix stay visible with an **Updating** label. Source and consumer readings continue updating, and Other consumption uses the held home total with the current consumer readings. A recovered balance displays immediately. If readings remain inconsistent, the hold ends and the measurement warning appears, even if no new sensor update arrives. At startup, there is no held value until a balanced reading is available. Unavailable source sensors still show an immediate warning.
+
+
 ## YAML example
 
 All these settings are also available in the visual editor. Replace the example entity IDs with your own:

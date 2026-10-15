@@ -1,11 +1,11 @@
 // @vitest-environment happy-dom
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { LitElement } from 'lit';
 import './energy-flow-card';
 import type { CardConfig, Hass } from './power';
 type Card = LitElement & {setConfig(config:CardConfig):void;hass:Hass};
 const hass: Hass = {states:{solar:{state:'2500',attributes:{unit_of_measurement:'W'}},device:{state:'500',attributes:{unit_of_measurement:'W',friendly_name:'Heat pump'}}}};
-afterEach(()=>document.body.replaceChildren());
+afterEach(()=>{document.body.replaceChildren();vi.useRealTimers();});
 describe('card and editor integration',()=>{
   it('renders calculated home power and consumer labels',async()=>{
     const card = document.createElement('energy-flow-card') as Card;
@@ -45,6 +45,47 @@ describe('card and editor integration',()=>{
     expect(rows()[0]).toContain('100 W');
     expect(rows()[0]).not.toContain('Offline');
     expect(rows()[2]).toContain('271 W');
+  });
+  it('holds transient imbalances and expires the hold even without new sensor updates',async()=>{
+    vi.useFakeTimers();
+    const card=document.createElement('energy-flow-card') as Card;
+    const config:CardConfig={type:'custom:energy-flow-card',solar_entity:'solar',grid:{entity:'grid'},consumers:[{entity:'device'}]};
+    const states=(solar:string)=>({states:{solar:{state:solar,attributes:{unit_of_measurement:'W'}},grid:{state:'-5590',attributes:{unit_of_measurement:'W'}},device:{state:'1',attributes:{unit_of_measurement:'W'}}}});
+    card.setConfig(config);card.hass=states('5962');document.body.append(card);await card.updateComplete;
+    card.hass=states('5400');await card.updateComplete;
+    expect(card.shadowRoot!.querySelector('.home-node .value')!.textContent).toBe('372 W');
+    expect(card.shadowRoot!.querySelector('.home-node .sub')!.textContent).toBe('Updating');
+    expect(card.shadowRoot!.querySelector('.warning')).toBeNull();
+    expect(card.shadowRoot!.querySelectorAll('.consumer')[1].textContent).toContain('371 W');
+    await vi.advanceTimersByTimeAsync(2000);
+    card.hass=states('5390');await card.updateComplete;
+    await vi.advanceTimersByTimeAsync(999);await card.updateComplete;
+    expect(card.shadowRoot!.querySelector('.live')!.textContent).toContain('Updating');
+    await vi.advanceTimersByTimeAsync(1);await card.updateComplete;
+    expect(card.shadowRoot!.querySelector('.live')!.textContent).not.toContain('Updating');
+    expect(card.shadowRoot!.querySelector('.warning')!.textContent).toContain('Measurements do not balance');
+    card.hass=states('5900');await card.updateComplete;
+    expect(card.shadowRoot!.querySelector('.home-node .value')!.textContent).toBe('310 W');
+    expect(card.shadowRoot!.querySelector('.warning')).toBeNull();
+  });
+  it('clears grace timers on recovery, config changes, and disconnect',async()=>{
+    vi.useFakeTimers();
+    const card=document.createElement('energy-flow-card') as Card;
+    card.setConfig({type:'custom:energy-flow-card',grid:{entity:'grid'}});
+    const state=(n:number)=>({states:{grid:{state:String(n),attributes:{unit_of_measurement:'W'}}}});
+    card.hass=state(100);document.body.append(card);await card.updateComplete;
+    card.hass=state(-100);await card.updateComplete;
+    card.hass=state(50);await card.updateComplete;
+    expect(vi.getTimerCount()).toBe(0);
+    await vi.advanceTimersByTimeAsync(4000);await card.updateComplete;
+    expect(card.shadowRoot!.querySelector('.warning')).toBeNull();
+    card.hass=state(-100);await card.updateComplete;
+    card.setConfig({type:'custom:energy-flow-card',solar_entity:'missing'});await card.updateComplete;
+    expect(vi.getTimerCount()).toBe(0);
+    expect(card.shadowRoot!.querySelector('.home-node .value')!.textContent).toBe('Unavailable');
+    card.setConfig({type:'custom:energy-flow-card',grid:{entity:'grid'}});await card.updateComplete;
+    card.remove();
+    expect(vi.getTimerCount()).toBe(0);
   });
   it('inherits entity icons, allows overrides, and labels small consumers accurately',async()=>{
     const card=document.createElement('energy-flow-card') as Card;
