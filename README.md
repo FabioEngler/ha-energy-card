@@ -4,7 +4,7 @@ An animated, responsive Home Assistant Lovelace card for **live power**. See sol
 
 ## Features
 
-- Animated directional flows with speed reflecting current power.
+- Glowing directional particles with short trails, smooth speed changes, and power-driven density and brightness. Streams fade into the junction, and slow down and fade before stopping or reversing.
 - Automatic home consumption: **solar + grid import + battery discharge − grid export − battery charge**.
 - Separate import/export and charge/discharge sensors, or signed sensors with configurable direction.
 - Larger home total with a segmented ring showing the estimated solar/grid/battery mix.
@@ -33,9 +33,13 @@ If the card is not listed, refresh the browser cache and confirm the resource UR
 
 HACS offers updates when a newer release is available. If you previously installed `main`, open Energy Flow Card in HACS, choose **Redownload**, and select the latest version (starting with **v0.2.0**) to switch to versioned releases. Refresh the Home Assistant browser or companion app afterward. If an older version remains visible, clear the frontend cache and reload. Development changes can still be installed by selecting `main` instead of a release.
 
-In the visual editor, **Flow animation** offers **Follow device preference**, **Always animate**, and **Off**. The default follows your device's reduced motion preference. Choose **Always animate** to enable moving dots even on devices with reduced motion enabled. Dots move continuously without waiting for sensor updates; their direction follows import/export and charge/discharge. Zero or unavailable flows remain still.
+In the visual editor, **Flow animation** offers **Follow device preference**, **Always animate**, and **Off**. The default follows your device's reduced motion preference. Choose **Always animate** to enable moving dots even on devices with reduced motion enabled. Particles move continuously without waiting for sensor updates; their direction follows import/export and charge/discharge. Speed eases toward new readings over roughly 1–2 seconds. Zero or unavailable flows slow down and fade out. With motion disabled, static arrows indicate direction instead. Consumer bars ease to new proportions over 400 ms while numeric readings update immediately.
 
 In YAML, `animation: true` always animates, `animation: false` disables motion, and omitting `animation` follows the device preference.
+
+**Full animation at (W)** sets the power ceiling for visual intensity, defaulting to **10,000 W per connection**. A logarithmic scale makes low and medium loads distinguishable, then caps at **six particles per connection**, **48 SVG units/second**, and **95% particle opacity**, with a fixed glow size. Above the ceiling, the visuals remain at those limits while actual power readings continue to display normally. Lower the setting for a smaller installation or raise it for larger loads. YAML uses `animation_power_max: 10000`.
+
+Each card uses one animation loop and pauses it when the card is off screen, the browser tab is hidden, motion is disabled, or all streams have stopped. Particle positions survive sensor updates and power-ceiling changes. Consumer rows retain their bars when sorting changes.
 
 ### Publishing releases (repository owner)
 
@@ -91,6 +95,7 @@ battery:
   export_entity: sensor.battery_charge_power
 battery_soc_entity: sensor.battery_soc
 animation: true
+animation_power_max: 10000
 sort_by_power: false
 consumers:
   - entity: sensor.heat_pump_power
@@ -124,6 +129,15 @@ npm ci
 npm test
 npm run build
 ```
+
+Browser regression tests run against the built bundle with lightweight Home Assistant element stand-ins. To install Chromium and run them:
+
+```sh
+npx playwright install --with-deps chromium
+npm run test:browser
+```
+
+If Chromium is already installed, use `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser`. The tests cover continuous motion, reversals, stopping, the visual caps, consumer bar transitions, reduced motion, off-screen pausing, and balance-grace recovery. CI and release workflows run them before publishing.
 
 `npm run dev` rebuilds the bundle on changes; copy the rebuilt bundle to your test Home Assistant instance and refresh the dashboard. No backend service, credentials, or separate runtime is required for the card. Home Assistant supplies entity updates through its `hass` property.
 

@@ -5,6 +5,7 @@ export interface Consumer { entity: string; name?: string; icon?: string }
 export interface CardConfig {
   type: string; title?: string; solar_entity?: string; grid?: FlowConfig; battery?: FlowConfig;
   battery_soc_entity?: string; consumers?: Consumer[]; sort_by_power?: boolean; animation?: boolean;
+  animation_power_max?: number;
 }
 // All calculations use watts. Source readings must remain unknown when invalid.
 export function watts(hass: Hass, entity?: string): number | null {

@@ -1,7 +1,10 @@
 import { LitElement, html, css, svg, nothing } from 'lit';
+import { repeat } from 'lit/directives/repeat.js';
 import { calculate, formatPower, type CardConfig, type Hass } from './power';
 import { batteryAppearance, formatShare, stateOfCharge } from './presentation';
 import { BalanceGracePeriod } from './balance';
+import { FlowAnimator, FLOW_GEOMETRY, type FlowId } from './flow-animator';
+import { DEFAULT_ANIMATION_POWER_MAX, MAX_PARTICLES, powerEnvelope } from './motion';
 import './editor';
 
 interface NodeOptions {
@@ -20,6 +23,7 @@ class EnergyFlowCard extends LitElement {
   private balanceGrace = new BalanceGracePeriod();
   private reading?: ReturnType<BalanceGracePeriod['update']>;
   private balanceTimer?: ReturnType<typeof setTimeout>;
+  private flowAnimator = new FlowAnimator(this);
   private clearBalanceTimer() {
     if (this.balanceTimer !== undefined) clearTimeout(this.balanceTimer);
     this.balanceTimer = undefined;
@@ -27,12 +31,14 @@ class EnergyFlowCard extends LitElement {
   connectedCallback() {
     this.balanceGrace.reset();
     super.connectedCallback();
+    this.flowAnimator.connect();
     this.requestUpdate();
   }
   disconnectedCallback() {
     super.disconnectedCallback();
     this.clearBalanceTimer();
     this.balanceGrace.reset();
+    this.flowAnimator.disconnect();
   }
   protected willUpdate() {
     this.clearBalanceTimer();
@@ -45,22 +51,40 @@ class EnergyFlowCard extends LitElement {
       }, this.reading.recheckIn);
     }
   }
+  protected updated() {
+    const m = this.reading;
+    if (!m) return;
+    this.flowAnimator.sync(this.renderRoot.querySelector<SVGSVGElement>('.diagram'), {
+      'solar-flow': m.solar,
+      'grid-flow': m.grid ? m.grid.incoming - m.grid.outgoing : null,
+      'battery-flow': m.battery ? m.battery.incoming - m.battery.outgoing : null,
+      'home-flow': m.home,
+    }, this.config.animation_power_max, this.config.animation);
+  }
   static getConfigElement() { return document.createElement('energy-flow-card-editor'); }
   static getStubConfig() { return { type: 'custom:energy-flow-card', title: 'Live energy', consumers: [] }; }
   setConfig(config: CardConfig) {
     if (!config || typeof config !== 'object') throw new Error('A card configuration is required');
     if (config.consumers && (!Array.isArray(config.consumers) || config.consumers.some(c => !c.entity))) throw new Error('Each consumer needs an entity');
+    if (config.animation_power_max !== undefined && (!Number.isFinite(config.animation_power_max) || config.animation_power_max <= 0)) throw new Error('Animation power limit must be a positive number in watts');
     this.clearBalanceTimer();
     this.balanceGrace.reset();
     this.config = { ...config, consumers: config.consumers ?? [] };
   }
   getCardSize() { return 5 + (this.config?.consumers?.length ?? 0); }
-  private connection(id: string, path: string, power: number | null, color: string) {
-    const active = power !== null && Math.abs(power) > 1;
-    const reverse = (power ?? 0) < 0;
-    const duration = Math.max(1.2, 5 - Math.log10(Math.abs(power ?? 0) + 1));
-    return svg`<path d=${path} class="wire" stroke=${color}/>
-      ${active ? svg`<path id=${id} d=${path} class="current" stroke=${color} style=${`animation-duration:${duration}s;animation-direction:${reverse ? 'reverse' : 'normal'}`}/>` : nothing}`;
+  private connection(id: FlowId, power: number | null, color: string) {
+    const g = FLOW_GEOMETRY[id];
+    const visual = powerEnvelope(power, this.config.animation_power_max ?? DEFAULT_ANIMATION_POWER_MAX);
+    const angle = Math.atan2(g.y2 - g.y1, g.x2 - g.x1) * 180 / Math.PI + (visual.direction < 0 ? 180 : 0);
+    return svg`<g data-flow=${id} style=${`color:${color}`} aria-hidden="true" class="energy-flow">
+      <path d=${`M${g.x1} ${g.y1} L${g.x2} ${g.y2}`} class="wire"/>
+      <path class="flow-static" d="M-4 -3 L0 0 L-4 3" opacity=${visual.active ? visual.brightness : 0}
+        transform=${`translate(${(g.x1 + g.x2) / 2},${(g.y1 + g.y2) / 2}) rotate(${angle})`}/>
+      <g class="flow-particles">${Array.from({ length: MAX_PARTICLES }, () => svg`<g class="flow-particle" opacity="0">
+        <circle cx="-9" r=".6" opacity=".15"/><circle cx="-6" r="1" opacity=".3"/><circle cx="-3" r="1.4" opacity=".55"/>
+        <circle r="4" opacity=".12"/><circle r="2"/><circle r=".7" fill="white" opacity=".85"/>
+      </g>`)}</g>
+    </g>`;
   }
   private moreInfo(entity?: string) {
     if (entity) this.dispatchEvent(new CustomEvent('hass-more-info', { detail: { entityId: entity }, bubbles: true, composed: true }));
@@ -107,14 +131,16 @@ class EnergyFlowCard extends LitElement {
     const battery = batteryAppearance(soc, batteryNet);
     const gridEntity = c.grid?.entity || (gridNet !== null && gridNet < 0 ? c.grid?.export_entity || c.grid?.import_entity : c.grid?.import_entity || c.grid?.export_entity);
     const batteryEntity = c.battery?.entity || (batteryNet !== null && batteryNet < -1 ? c.battery?.export_entity || c.battery?.import_entity : c.battery?.import_entity || c.battery?.export_entity) || c.battery_soc_entity;
-    return html`<ha-card>
+    return html`<ha-card class=${`motion-${c.animation === true ? 'on' : c.animation === false ? 'off' : 'auto'}`}>
       <header><div><span class="eyebrow">POWER FLOW</span><h2>${c.title || 'Live energy'}</h2></div><span class=${`live ${m.updating ? 'updating' : ''}`}><i></i>${m.updating ? 'Updating' : 'Live'}</span></header>
       <svg class=${`diagram motion-${c.animation === true ? 'on' : c.animation === false ? 'off' : 'auto'}`} viewBox="0 0 460 400" role="group" aria-label="Live power flow: solar, grid, battery, and home meet at a shared junction">
-        ${this.connection('solar-flow', 'M230 115 V192', m.solar, 'var(--ef-solar)')}
-        ${this.connection('grid-flow', 'M113 192 H230', gridNet, 'var(--ef-grid)')}
-        ${batteryPresent ? this.connection('battery-flow', 'M230 269 V192', batteryNet, 'var(--ef-battery)') : nothing}
-        ${this.connection('home-flow', 'M230 192 H331', m.home, 'var(--ef-home)')}
-        <circle cx="230" cy="192" r="4" class="junction"/>
+        <defs><radialGradient id="junction-halo"><stop offset="0" stop-color="currentColor" stop-opacity=".8"/><stop offset=".35" stop-color="currentColor" stop-opacity=".25"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></radialGradient></defs>
+        ${this.connection('solar-flow', m.solar, 'var(--ef-solar)')}
+        ${this.connection('grid-flow', gridNet, 'var(--ef-grid)')}
+        ${batteryPresent ? this.connection('battery-flow', batteryNet, 'var(--ef-battery)') : nothing}
+        ${this.connection('home-flow', m.home, 'var(--ef-home)')}
+        <circle cx="230" cy="192" r="13" class="junction-glow" fill="url(#junction-halo)" opacity="0" aria-hidden="true"/>
+        <circle cx="230" cy="192" r="3.5" class="junction"/>
         ${this.node(230, 72, 'mdi:solar-power-variant', 'Solar', formatPower(m.solar), 'var(--ef-solar)', 'Production', true, { entity: c.solar_entity })}
         ${this.node(70, 192, 'mdi:transmission-tower', 'Grid', formatPower(gridNet === null ? null : Math.abs(gridNet)), 'var(--ef-grid)', gridNet === null ? 'Unavailable' : gridNet < 0 ? 'Exporting' : gridNet > 0 ? 'Importing' : 'Idle', false, { entity: gridEntity })}
         ${this.node(390, 192, 'mdi:home-lightning-bolt-outline', 'Home', formatPower(m.home), 'var(--ef-home)', m.updating ? 'Updating' : 'Calculated', false, { home: true, ring: m.sources, homePower: m.home })}
@@ -128,7 +154,7 @@ class EnergyFlowCard extends LitElement {
       </section>
       <section class="consumers">
         <div class="section-title">Consumers <span>${m.consumers.length} ${m.consumers.length === 1 ? 'device' : 'devices'}</span></div>
-        ${m.consumers.map(device => this.consumer(device.name || String(this.hass.states[device.entity]?.attributes.friendly_name || device.entity), device.power, m.home, { entity: device.entity, icon: device.icon, offline: device.unavailable }))}
+        ${repeat(m.consumers, device => device.entity, device => this.consumer(device.name || String(this.hass.states[device.entity]?.attributes.friendly_name || device.entity), device.power, m.home, { entity: device.entity, icon: device.icon, offline: device.unavailable }))}
         ${this.consumer('Other consumption', m.other, m.home, { icon: 'mdi:dots-horizontal' })}
         ${m.mismatch ? html`<p class="warning" role="status">Measurements do not balance. Check sensor directions, overlapping consumers, and update timing.</p>` : nothing}
         ${m.home === null && !m.updating ? html`<p class="warning" role="status">Some source sensors are unavailable or do not report W/kW. Totals that depend on them are unavailable.</p>` : nothing}
@@ -142,7 +168,7 @@ class EnergyFlowCard extends LitElement {
       ? html`<ha-icon .icon=${options.icon || 'mdi:power-plug-outline'}></ha-icon>`
       : html`<ha-state-icon .hass=${this.hass} .stateObj=${state}></ha-state-icon>`}</span>
       <span class="device"><span class="row"><span class="device-name">${name}${options.offline ? html`<span class="offline-badge" title="No usable power reading. Counted as 0 W.">Offline</span>` : nothing}</span><strong>${formatPower(power)}</strong></span>
-      <span class="row"><span class="track"><span style=${`width:${Math.min(100, share ?? 0)}%`}></span></span><small>${formatShare(power, home)}</small></span></span>`;
+      <span class="row"><span class="track"><span style=${`transform:scaleX(${Math.min(100, share ?? 0) / 100})`}></span></span><small>${formatShare(power, home)}</small></span></span>`;
     return options.entity ? html`<button class="consumer interactive" type="button" @click=${() => this.moreInfo(options.entity)}>${contents}</button>`
       : html`<div class="consumer">${contents}</div>`;
   }
@@ -164,9 +190,11 @@ class EnergyFlowCard extends LitElement {
     .interactive { cursor:pointer; }.flow-node:focus-visible { outline:none; }.flow-node:focus-visible .node { stroke-width:4;stroke:var(--primary-color,#68b7ff); }
     text { fill:var(--primary-text-color,#eee);text-anchor:middle;font-family:inherit; }.value { font-size:13px;font-weight:600;font-variant-numeric:tabular-nums; }.sub { font-size:9px;fill:var(--secondary-text-color,#aaa); }.label { font-size:12px;fill:var(--secondary-text-color,#aaa); }
     foreignObject { color:var(--primary-text-color,#eee); }.node-icon { display:flex;align-items:center;justify-content:center;width:24px;height:24px;--mdc-icon-size:24px; }
-    .wire { fill:none;stroke-width:1.5;opacity:.3; }.current { fill:none;stroke-width:4;stroke-linecap:round;stroke-dasharray:1 24;animation:flow linear infinite; }
-    .junction { fill:var(--primary-text-color,#eee); }.motion-off .current { animation:none; }
-    @keyframes flow { from { stroke-dashoffset:0; } to { stroke-dashoffset:-50; } }
+    .energy-flow { pointer-events:none; }.wire { fill:none;stroke:currentColor;stroke-width:1.5;opacity:.23; }
+    .flow-static { fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round; }
+    .flow-particles { display:none;fill:currentColor;filter:drop-shadow(0 0 1.5px currentColor); }
+    .diagram[data-motion] .flow-particles { display:block; }.diagram[data-motion] .flow-static { display:none; }
+    .junction { fill:var(--primary-text-color,#eee); }.junction-glow { pointer-events:none; }
     section { padding:0 24px 20px; }.section-title { display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:600;margin-bottom:14px; }.section-title span { font-size:11px;font-weight:400;color:var(--secondary-text-color); }
     .mix-bar { height:8px;display:flex;overflow:hidden;border-radius:8px;background:var(--divider-color,#333); }.mix-bar div { transition:width .5s; }
     .legend { display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;font-size:11px; }.legend span { display:flex;align-items:center;gap:5px; }.legend i { width:6px;height:6px;border-radius:50%; }.legend b { font-weight:500; }
@@ -177,9 +205,10 @@ class EnergyFlowCard extends LitElement {
     .device { flex:1;min-width:0; }.row { display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px; }.device-name { display:flex;align-items:center;gap:7px;flex-wrap:wrap;overflow-wrap:anywhere;min-width:0; }
     .row strong { white-space:nowrap;font-size:15px;font-weight:650;font-variant-numeric:tabular-nums; }.row small { width:35px;text-align:right;color:var(--secondary-text-color);font-size:11px;font-variant-numeric:tabular-nums; }
     .offline-badge { border:1px solid var(--divider-color,#555);border-radius:5px;padding:2px 5px;font-size:9px;line-height:1.2;color:var(--secondary-text-color);font-weight:400; }
-    .track { flex:1;height:4px;border-radius:4px;background:var(--divider-color,#333);margin-top:6px;overflow:hidden; }.track span { display:block;height:100%;background:var(--ef-home);border-radius:4px;transition:width .5s; }
+    .track { flex:1;height:4px;border-radius:4px;background:var(--divider-color,#333);margin-top:6px;overflow:hidden; }.track span { display:block;width:100%;height:100%;background:var(--ef-home);border-radius:4px;transform-origin:left center;transition:transform .4s cubic-bezier(.22,.61,.36,1); }
     .warning { font-size:12px;color:var(--warning-color,#e7ac55);line-height:1.5; }.empty { padding:24px;line-height:1.6; }
-    @media (prefers-reduced-motion:reduce) { .motion-auto .current { animation:none; } * { transition:none!important; } }
+    .motion-off .track span,.motion-off .mix-bar div { transition:none; }
+    @media (prefers-reduced-motion:reduce) { .motion-auto .track span,.motion-auto .mix-bar div { transition:none; } }
     @media (max-width:360px) { header { padding:18px 16px 0; } section { padding-left:16px;padding-right:16px; }.legend { gap:8px; } }
   `;
 }

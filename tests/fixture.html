@@ -1,0 +1,26 @@
+<!doctype html>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+  body { margin:0;background:#101217;font:14px Arial; }
+  energy-flow-card { display:block;width:100%;--primary-text-color:#eee;--secondary-text-color:#aaa;--card-background-color:#1c1c1c;--divider-color:#333; }
+</style>
+<script type="module">
+  // Minimal HA element stand-ins: tests exercise our bundle, not a HA server.
+  customElements.define('ha-card',class extends HTMLElement {
+    constructor(){super();this.attachShadow({mode:'open'}).innerHTML='<style>:host{display:block;border:1px solid #383838}</style><slot></slot>'}
+  });
+  customElements.define('ha-icon',class extends HTMLElement {
+    constructor(){
+      super();this.attachShadow({mode:'open'}).innerHTML='<style>:host{display:inline-flex;width:24px;height:24px}svg{width:24px;height:24px;fill:currentColor}</style><svg viewBox="0 0 24 24"><path d="M12 3 3 11h3v10h5v-6h2v6h5V11h3Z"/></svg>';
+    }
+  });
+  customElements.define('ha-state-icon',class extends customElements.get('ha-icon'){});
+  import '/card.js';
+  window.config={type:'custom:energy-flow-card',animation:true,solar_entity:'solar',grid:{entity:'grid'},battery:{entity:'battery'},battery_soc_entity:'soc',consumers:[{entity:'consumer',name:'Washing machine'},{entity:'pump',name:'Heat pump'}]};
+  window.values={solar:3000,grid:1000,battery:500,soc:62,consumer:600,pump:250};
+  window.card=document.createElement('energy-flow-card');
+  window.update=()=>{card.hass={states:Object.fromEntries(Object.entries(values).map(([id,value])=>[id,{state:String(value),attributes:{unit_of_measurement:id==='soc'?'%':'W'}}]))}};
+  card.setConfig(config);update();document.body.append(card);
+  window.opened=[];
+  document.addEventListener('hass-more-info',e=>opened.push(e.detail.entityId));
+</script>

@@ -49,7 +49,7 @@ describe('card and editor integration',()=>{
   it('holds transient imbalances and expires the hold even without new sensor updates',async()=>{
     vi.useFakeTimers();
     const card=document.createElement('energy-flow-card') as Card;
-    const config:CardConfig={type:'custom:energy-flow-card',solar_entity:'solar',grid:{entity:'grid'},consumers:[{entity:'device'}]};
+    const config:CardConfig={type:'custom:energy-flow-card',animation:false,solar_entity:'solar',grid:{entity:'grid'},consumers:[{entity:'device'}]};
     const states=(solar:string)=>({states:{solar:{state:solar,attributes:{unit_of_measurement:'W'}},grid:{state:'-5590',attributes:{unit_of_measurement:'W'}},device:{state:'1',attributes:{unit_of_measurement:'W'}}}});
     card.setConfig(config);card.hass=states('5962');document.body.append(card);await card.updateComplete;
     card.hass=states('5400');await card.updateComplete;
@@ -71,7 +71,7 @@ describe('card and editor integration',()=>{
   it('clears grace timers on recovery, config changes, and disconnect',async()=>{
     vi.useFakeTimers();
     const card=document.createElement('energy-flow-card') as Card;
-    card.setConfig({type:'custom:energy-flow-card',grid:{entity:'grid'}});
+    card.setConfig({type:'custom:energy-flow-card',animation:false,grid:{entity:'grid'}});
     const state=(n:number)=>({states:{grid:{state:String(n),attributes:{unit_of_measurement:'W'}}}});
     card.hass=state(100);document.body.append(card);await card.updateComplete;
     card.hass=state(-100);await card.updateComplete;
@@ -83,7 +83,7 @@ describe('card and editor integration',()=>{
     card.setConfig({type:'custom:energy-flow-card',solar_entity:'missing'});await card.updateComplete;
     expect(vi.getTimerCount()).toBe(0);
     expect(card.shadowRoot!.querySelector('.home-node .value')!.textContent).toBe('Unavailable');
-    card.setConfig({type:'custom:energy-flow-card',grid:{entity:'grid'}});await card.updateComplete;
+    card.setConfig({type:'custom:energy-flow-card',animation:false,grid:{entity:'grid'}});await card.updateComplete;
     card.remove();
     expect(vi.getTimerCount()).toBe(0);
   });
@@ -164,6 +164,30 @@ describe('card and editor integration',()=>{
     expect(schema[0].name).toBe('entity');
     forms[0].dispatchEvent(new CustomEvent('value-changed',{detail:{value:{entity:'sensor.grid',invert:true}}}));
     expect(changed?.grid).toEqual({entity:'sensor.grid',invert:true});
+  });
+  it('stores the animation power ceiling in the visual editor',async()=>{
+    const editor=document.createElement('energy-flow-card-editor') as Card;
+    editor.setConfig({type:'custom:energy-flow-card',solar_entity:'solar'});editor.hass=hass;
+    document.body.append(editor);await editor.updateComplete;
+    const form=editor.shadowRoot!.querySelector('ha-form')!;
+    expect((form as unknown as {data:{animation_power_max:number}}).data.animation_power_max).toBe(10000);
+    let config:CardConfig|undefined;
+    editor.addEventListener('config-changed',(e:Event)=>config=(e as CustomEvent).detail.config);
+    form.dispatchEvent(new CustomEvent('value-changed',{detail:{value:{animation_mode:'on',animation_power_max:20000}}}));
+    expect(config).toMatchObject({solar_entity:'solar',animation:true,animation_power_max:20000});
+    const card=document.createElement('energy-flow-card') as Card;
+    expect(()=>card.setConfig({...config!,animation_power_max:0})).toThrow('positive number');
+  });
+  it('retains consumer bar elements for their entities when sorting changes',async()=>{
+    const card=document.createElement('energy-flow-card') as Card;
+    card.setConfig({type:'custom:energy-flow-card',solar_entity:'solar',sort_by_power:true,animation:false,consumers:[{entity:'device',name:'Pump'},{entity:'other',name:'Car'}]});
+    card.hass={states:{...hass.states,other:{state:'100',attributes:{unit_of_measurement:'W'}}}};
+    document.body.append(card);await card.updateComplete;
+    const first=card.shadowRoot!.querySelector('button.consumer')!;
+    expect(first.textContent).toContain('Pump');
+    card.hass={states:{...hass.states,other:{state:'1000',attributes:{unit_of_measurement:'W'}}}};
+    await card.updateComplete;
+    expect(card.shadowRoot!.querySelectorAll('button.consumer')[1]).toBe(first);
   });
   it('saves explicit motion preferences and can restore the device default without losing sensors',async()=>{
     const editor=document.createElement('energy-flow-card-editor') as Card;

@@ -1,5 +1,6 @@
 import { LitElement, html, css, nothing } from 'lit';
 import type { CardConfig, Consumer, Hass, FlowConfig } from './power';
+import { DEFAULT_ANIMATION_POWER_MAX } from './motion';
 
 class EnergyFlowEditor extends LitElement {
   static properties = { hass: { attribute:false }, config: { state:true } };
@@ -40,7 +41,7 @@ class EnergyFlowEditor extends LitElement {
   render() {
     if (!this.hass || !this.config) return nothing;
     return html`<div class="editor">
-      ${this.form([{name:'title',label:'Title',selector:{text:{}}},this.entity('solar_entity','Solar production'),this.entity('battery_soc_entity','Battery state of charge',true),{name:'animation_mode',label:'Flow animation',selector:{select:{options:[{value:'auto',label:'Follow device preference'},{value:'on',label:'Always animate'},{value:'off',label:'Off'}]}}},{name:'sort_by_power',label:'Sort consumers by current power',selector:{boolean:{}}}],{...this.config,animation_mode:this.config.animation === true ? 'on' : this.config.animation === false ? 'off' : 'auto'},data => {
+      ${this.form([{name:'title',label:'Title',selector:{text:{}}},this.entity('solar_entity','Solar production'),this.entity('battery_soc_entity','Battery state of charge',true),{name:'animation_mode',label:'Flow animation',selector:{select:{options:[{value:'auto',label:'Follow device preference'},{value:'on',label:'Always animate'},{value:'off',label:'Off'}]}}},{name:'animation_power_max',label:'Full animation at (W)',selector:{number:{min:100,max:1000000,step:100,mode:'box',unit_of_measurement:'W'}}},{name:'sort_by_power',label:'Sort consumers by current power',selector:{boolean:{}}}],{...this.config,animation_power_max:this.config.animation_power_max ?? DEFAULT_ANIMATION_POWER_MAX,animation_mode:this.config.animation === true ? 'on' : this.config.animation === false ? 'off' : 'auto'},data => {
         const { animation_mode, ...config } = data;
         const next = { ...this.config, ...config };
         if (animation_mode === 'auto') delete next.animation;
@@ -48,7 +49,7 @@ class EnergyFlowEditor extends LitElement {
         this.config = next;
         this.dispatchEvent(new CustomEvent('config-changed',{detail:{config:next},bubbles:true,composed:true}));
       })}
-      <p>Follow device preference respects reduced motion. Always animate enables moving flow dots even when reduced motion is enabled on this device. Idle flows remain still.</p>
+      <p>Follow device preference respects reduced motion. Always animate enables moving flow dots even when reduced motion is enabled on this device. Idle flows fade to a stop. Full animation at sets the power where speed, particle density, and brightness reach their limits (default: 10,000 W). Higher readings still display normally.</p>
       ${this.source('grid')}${this.source('battery')}
       <h3>Consumers</h3><p>Choose individual, non-overlapping power sensors. Home consumption is calculated automatically.</p>
       ${(this.config.consumers ?? []).map((device,index) => html`<div class="consumer">

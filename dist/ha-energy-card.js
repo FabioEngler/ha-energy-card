@@ -3,26 +3,46 @@
  * Copyright 2019 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const t$1=globalThis,e$2=t$1.ShadowRoot&&(void 0===t$1.ShadyCSS||t$1.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s$2=Symbol(),o$3=new WeakMap;let n$2 = class n{constructor(t,e,o){if(this._$cssResult$=true,o!==s$2)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e;}get styleSheet(){let t=this.o;const s=this.t;if(e$2&&void 0===t){const e=void 0!==s&&1===s.length;e&&(t=o$3.get(s)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&o$3.set(s,t));}return t}toString(){return this.cssText}};const r$2=t=>new n$2("string"==typeof t?t:t+"",void 0,s$2),i$3=(t,...e)=>{const o=1===t.length?t[0]:e.reduce((e,s,o)=>e+(t=>{if(true===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(s)+t[o+1],t[0]);return new n$2(o,t,s$2)},S$1=(s,o)=>{if(e$2)s.adoptedStyleSheets=o.map(t=>t instanceof CSSStyleSheet?t:t.styleSheet);else for(const e of o){const o=document.createElement("style"),n=t$1.litNonce;void 0!==n&&o.setAttribute("nonce",n),o.textContent=e.cssText,s.appendChild(o);}},c$2=e$2?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const s of t.cssRules)e+=s.cssText;return r$2(e)})(t):t;
+const t$3=globalThis,e$3=t$3.ShadowRoot&&(void 0===t$3.ShadyCSS||t$3.ShadyCSS.nativeShadow)&&"adoptedStyleSheets"in Document.prototype&&"replace"in CSSStyleSheet.prototype,s$3=Symbol(),o$3=new WeakMap;let n$2 = class n{constructor(t,e,o){if(this._$cssResult$=true,o!==s$3)throw Error("CSSResult is not constructable. Use `unsafeCSS` or `css` instead.");this.cssText=t,this.t=e;}get styleSheet(){let t=this.o;const s=this.t;if(e$3&&void 0===t){const e=void 0!==s&&1===s.length;e&&(t=o$3.get(s)),void 0===t&&((this.o=t=new CSSStyleSheet).replaceSync(this.cssText),e&&o$3.set(s,t));}return t}toString(){return this.cssText}};const r$2=t=>new n$2("string"==typeof t?t:t+"",void 0,s$3),i$5=(t,...e)=>{const o=1===t.length?t[0]:e.reduce((e,s,o)=>e+(t=>{if(true===t._$cssResult$)return t.cssText;if("number"==typeof t)return t;throw Error("Value passed to 'css' function must be a 'css' function result: "+t+". Use 'unsafeCSS' to pass non-literal values, but take care to ensure page security.")})(s)+t[o+1],t[0]);return new n$2(o,t,s$3)},S$1=(s,o)=>{if(e$3)s.adoptedStyleSheets=o.map(t=>t instanceof CSSStyleSheet?t:t.styleSheet);else for(const e of o){const o=document.createElement("style"),n=t$3.litNonce;void 0!==n&&o.setAttribute("nonce",n),o.textContent=e.cssText,s.appendChild(o);}},c$3=e$3?t=>t:t=>t instanceof CSSStyleSheet?(t=>{let e="";for(const s of t.cssRules)e+=s.cssText;return r$2(e)})(t):t;
 
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const{is:i$2,defineProperty:e$1,getOwnPropertyDescriptor:h$1,getOwnPropertyNames:r$1,getOwnPropertySymbols:o$2,getPrototypeOf:n$1}=Object,a$1=globalThis,c$1=a$1.trustedTypes,l$1=c$1?c$1.emptyScript:"",p$1=a$1.reactiveElementPolyfillSupport,d$1=(t,s)=>t,u$1={toAttribute(t,s){switch(s){case Boolean:t=t?l$1:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t);}return t},fromAttribute(t,s){let i=t;switch(s){case Boolean:i=null!==t;break;case Number:i=null===t?null:Number(t);break;case Object:case Array:try{i=JSON.parse(t);}catch(t){i=null;}}return i}},f$1=(t,s)=>!i$2(t,s),b$1={attribute:true,type:String,converter:u$1,reflect:false,useDefault:false,hasChanged:f$1};Symbol.metadata??=Symbol("metadata"),a$1.litPropertyMetadata??=new WeakMap;let y$1 = class y extends HTMLElement{static addInitializer(t){this._$Ei(),(this.l??=[]).push(t);}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(t,s=b$1){if(s.state&&(s.attribute=false),this._$Ei(),this.prototype.hasOwnProperty(t)&&((s=Object.create(s)).wrapped=true),this.elementProperties.set(t,s),!s.noAccessor){const i=Symbol(),h=this.getPropertyDescriptor(t,i,s);void 0!==h&&e$1(this.prototype,t,h);}}static getPropertyDescriptor(t,s,i){const{get:e,set:r}=h$1(this.prototype,t)??{get(){return this[s]},set(t){this[s]=t;}};return {get:e,set(s){const h=e?.call(this);r?.call(this,s),this.requestUpdate(t,h,i);},configurable:true,enumerable:true}}static getPropertyOptions(t){return this.elementProperties.get(t)??b$1}static _$Ei(){if(this.hasOwnProperty(d$1("elementProperties")))return;const t=n$1(this);t.finalize(),void 0!==t.l&&(this.l=[...t.l]),this.elementProperties=new Map(t.elementProperties);}static finalize(){if(this.hasOwnProperty(d$1("finalized")))return;if(this.finalized=true,this._$Ei(),this.hasOwnProperty(d$1("properties"))){const t=this.properties,s=[...r$1(t),...o$2(t)];for(const i of s)this.createProperty(i,t[i]);}const t=this[Symbol.metadata];if(null!==t){const s=litPropertyMetadata.get(t);if(void 0!==s)for(const[t,i]of s)this.elementProperties.set(t,i);}this._$Eh=new Map;for(const[t,s]of this.elementProperties){const i=this._$Eu(t,s);void 0!==i&&this._$Eh.set(i,t);}this.elementStyles=this.finalizeStyles(this.styles);}static finalizeStyles(s){const i=[];if(Array.isArray(s)){const e=new Set(s.flat(1/0).reverse());for(const s of e)i.unshift(c$2(s));}else void 0!==s&&i.push(c$2(s));return i}static _$Eu(t,s){const i=s.attribute;return  false===i?void 0:"string"==typeof i?i:"string"==typeof t?t.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=false,this.hasUpdated=false,this._$Em=null,this._$Ev();}_$Ev(){this._$ES=new Promise(t=>this.enableUpdating=t),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(t=>t(this));}addController(t){(this._$EO??=new Set).add(t),void 0!==this.renderRoot&&this.isConnected&&t.hostConnected?.();}removeController(t){this._$EO?.delete(t);}_$E_(){const t=new Map,s=this.constructor.elementProperties;for(const i of s.keys())this.hasOwnProperty(i)&&(t.set(i,this[i]),delete this[i]);t.size>0&&(this._$Ep=t);}createRenderRoot(){const t=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return S$1(t,this.constructor.elementStyles),t}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(true),this._$EO?.forEach(t=>t.hostConnected?.());}enableUpdating(t){}disconnectedCallback(){this._$EO?.forEach(t=>t.hostDisconnected?.());}attributeChangedCallback(t,s,i){this._$AK(t,i);}_$ET(t,s){const i=this.constructor.elementProperties.get(t),e=this.constructor._$Eu(t,i);if(void 0!==e&&true===i.reflect){const h=(void 0!==i.converter?.toAttribute?i.converter:u$1).toAttribute(s,i.type);this._$Em=t,null==h?this.removeAttribute(e):this.setAttribute(e,h),this._$Em=null;}}_$AK(t,s){const i=this.constructor,e=i._$Eh.get(t);if(void 0!==e&&this._$Em!==e){const t=i.getPropertyOptions(e),h="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==t.converter?.fromAttribute?t.converter:u$1;this._$Em=e;const r=h.fromAttribute(s,t.type);this[e]=r??this._$Ej?.get(e)??r,this._$Em=null;}}requestUpdate(t,s,i,e=false,h){if(void 0!==t){const r=this.constructor;if(false===e&&(h=this[t]),i??=r.getPropertyOptions(t),!((i.hasChanged??f$1)(h,s)||i.useDefault&&i.reflect&&h===this._$Ej?.get(t)&&!this.hasAttribute(r._$Eu(t,i))))return;this.C(t,s,i);} false===this.isUpdatePending&&(this._$ES=this._$EP());}C(t,s,{useDefault:i,reflect:e,wrapped:h},r){i&&!(this._$Ej??=new Map).has(t)&&(this._$Ej.set(t,r??s??this[t]),true!==h||void 0!==r)||(this._$AL.has(t)||(this.hasUpdated||i||(s=void 0),this._$AL.set(t,s)),true===e&&this._$Em!==t&&(this._$Eq??=new Set).add(t));}async _$EP(){this.isUpdatePending=true;try{await this._$ES;}catch(t){Promise.reject(t);}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[t,s]of this._$Ep)this[t]=s;this._$Ep=void 0;}const t=this.constructor.elementProperties;if(t.size>0)for(const[s,i]of t){const{wrapped:t}=i,e=this[s];true!==t||this._$AL.has(s)||void 0===e||this.C(s,void 0,i,e);}}let t=false;const s=this._$AL;try{t=this.shouldUpdate(s),t?(this.willUpdate(s),this._$EO?.forEach(t=>t.hostUpdate?.()),this.update(s)):this._$EM();}catch(s){throw t=false,this._$EM(),s}t&&this._$AE(s);}willUpdate(t){}_$AE(t){this._$EO?.forEach(t=>t.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=true,this.firstUpdated(t)),this.updated(t);}_$EM(){this._$AL=new Map,this.isUpdatePending=false;}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(t){return  true}update(t){this._$Eq&&=this._$Eq.forEach(t=>this._$ET(t,this[t])),this._$EM();}updated(t){}firstUpdated(t){}};y$1.elementStyles=[],y$1.shadowRootOptions={mode:"open"},y$1[d$1("elementProperties")]=new Map,y$1[d$1("finalized")]=new Map,p$1?.({ReactiveElement:y$1}),(a$1.reactiveElementVersions??=[]).push("2.1.2");
+ */const{is:i$4,defineProperty:e$2,getOwnPropertyDescriptor:h$2,getOwnPropertyNames:r$1,getOwnPropertySymbols:o$2,getPrototypeOf:n$1}=Object,a$1=globalThis,c$2=a$1.trustedTypes,l$1=c$2?c$2.emptyScript:"",p$2=a$1.reactiveElementPolyfillSupport,d$1=(t,s)=>t,u$3={toAttribute(t,s){switch(s){case Boolean:t=t?l$1:null;break;case Object:case Array:t=null==t?t:JSON.stringify(t);}return t},fromAttribute(t,s){let i=t;switch(s){case Boolean:i=null!==t;break;case Number:i=null===t?null:Number(t);break;case Object:case Array:try{i=JSON.parse(t);}catch(t){i=null;}}return i}},f$1=(t,s)=>!i$4(t,s),b$1={attribute:true,type:String,converter:u$3,reflect:false,useDefault:false,hasChanged:f$1};Symbol.metadata??=Symbol("metadata"),a$1.litPropertyMetadata??=new WeakMap;let y$1 = class y extends HTMLElement{static addInitializer(t){this._$Ei(),(this.l??=[]).push(t);}static get observedAttributes(){return this.finalize(),this._$Eh&&[...this._$Eh.keys()]}static createProperty(t,s=b$1){if(s.state&&(s.attribute=false),this._$Ei(),this.prototype.hasOwnProperty(t)&&((s=Object.create(s)).wrapped=true),this.elementProperties.set(t,s),!s.noAccessor){const i=Symbol(),h=this.getPropertyDescriptor(t,i,s);void 0!==h&&e$2(this.prototype,t,h);}}static getPropertyDescriptor(t,s,i){const{get:e,set:r}=h$2(this.prototype,t)??{get(){return this[s]},set(t){this[s]=t;}};return {get:e,set(s){const h=e?.call(this);r?.call(this,s),this.requestUpdate(t,h,i);},configurable:true,enumerable:true}}static getPropertyOptions(t){return this.elementProperties.get(t)??b$1}static _$Ei(){if(this.hasOwnProperty(d$1("elementProperties")))return;const t=n$1(this);t.finalize(),void 0!==t.l&&(this.l=[...t.l]),this.elementProperties=new Map(t.elementProperties);}static finalize(){if(this.hasOwnProperty(d$1("finalized")))return;if(this.finalized=true,this._$Ei(),this.hasOwnProperty(d$1("properties"))){const t=this.properties,s=[...r$1(t),...o$2(t)];for(const i of s)this.createProperty(i,t[i]);}const t=this[Symbol.metadata];if(null!==t){const s=litPropertyMetadata.get(t);if(void 0!==s)for(const[t,i]of s)this.elementProperties.set(t,i);}this._$Eh=new Map;for(const[t,s]of this.elementProperties){const i=this._$Eu(t,s);void 0!==i&&this._$Eh.set(i,t);}this.elementStyles=this.finalizeStyles(this.styles);}static finalizeStyles(s){const i=[];if(Array.isArray(s)){const e=new Set(s.flat(1/0).reverse());for(const s of e)i.unshift(c$3(s));}else void 0!==s&&i.push(c$3(s));return i}static _$Eu(t,s){const i=s.attribute;return  false===i?void 0:"string"==typeof i?i:"string"==typeof t?t.toLowerCase():void 0}constructor(){super(),this._$Ep=void 0,this.isUpdatePending=false,this.hasUpdated=false,this._$Em=null,this._$Ev();}_$Ev(){this._$ES=new Promise(t=>this.enableUpdating=t),this._$AL=new Map,this._$E_(),this.requestUpdate(),this.constructor.l?.forEach(t=>t(this));}addController(t){(this._$EO??=new Set).add(t),void 0!==this.renderRoot&&this.isConnected&&t.hostConnected?.();}removeController(t){this._$EO?.delete(t);}_$E_(){const t=new Map,s=this.constructor.elementProperties;for(const i of s.keys())this.hasOwnProperty(i)&&(t.set(i,this[i]),delete this[i]);t.size>0&&(this._$Ep=t);}createRenderRoot(){const t=this.shadowRoot??this.attachShadow(this.constructor.shadowRootOptions);return S$1(t,this.constructor.elementStyles),t}connectedCallback(){this.renderRoot??=this.createRenderRoot(),this.enableUpdating(true),this._$EO?.forEach(t=>t.hostConnected?.());}enableUpdating(t){}disconnectedCallback(){this._$EO?.forEach(t=>t.hostDisconnected?.());}attributeChangedCallback(t,s,i){this._$AK(t,i);}_$ET(t,s){const i=this.constructor.elementProperties.get(t),e=this.constructor._$Eu(t,i);if(void 0!==e&&true===i.reflect){const h=(void 0!==i.converter?.toAttribute?i.converter:u$3).toAttribute(s,i.type);this._$Em=t,null==h?this.removeAttribute(e):this.setAttribute(e,h),this._$Em=null;}}_$AK(t,s){const i=this.constructor,e=i._$Eh.get(t);if(void 0!==e&&this._$Em!==e){const t=i.getPropertyOptions(e),h="function"==typeof t.converter?{fromAttribute:t.converter}:void 0!==t.converter?.fromAttribute?t.converter:u$3;this._$Em=e;const r=h.fromAttribute(s,t.type);this[e]=r??this._$Ej?.get(e)??r,this._$Em=null;}}requestUpdate(t,s,i,e=false,h){if(void 0!==t){const r=this.constructor;if(false===e&&(h=this[t]),i??=r.getPropertyOptions(t),!((i.hasChanged??f$1)(h,s)||i.useDefault&&i.reflect&&h===this._$Ej?.get(t)&&!this.hasAttribute(r._$Eu(t,i))))return;this.C(t,s,i);} false===this.isUpdatePending&&(this._$ES=this._$EP());}C(t,s,{useDefault:i,reflect:e,wrapped:h},r){i&&!(this._$Ej??=new Map).has(t)&&(this._$Ej.set(t,r??s??this[t]),true!==h||void 0!==r)||(this._$AL.has(t)||(this.hasUpdated||i||(s=void 0),this._$AL.set(t,s)),true===e&&this._$Em!==t&&(this._$Eq??=new Set).add(t));}async _$EP(){this.isUpdatePending=true;try{await this._$ES;}catch(t){Promise.reject(t);}const t=this.scheduleUpdate();return null!=t&&await t,!this.isUpdatePending}scheduleUpdate(){return this.performUpdate()}performUpdate(){if(!this.isUpdatePending)return;if(!this.hasUpdated){if(this.renderRoot??=this.createRenderRoot(),this._$Ep){for(const[t,s]of this._$Ep)this[t]=s;this._$Ep=void 0;}const t=this.constructor.elementProperties;if(t.size>0)for(const[s,i]of t){const{wrapped:t}=i,e=this[s];true!==t||this._$AL.has(s)||void 0===e||this.C(s,void 0,i,e);}}let t=false;const s=this._$AL;try{t=this.shouldUpdate(s),t?(this.willUpdate(s),this._$EO?.forEach(t=>t.hostUpdate?.()),this.update(s)):this._$EM();}catch(s){throw t=false,this._$EM(),s}t&&this._$AE(s);}willUpdate(t){}_$AE(t){this._$EO?.forEach(t=>t.hostUpdated?.()),this.hasUpdated||(this.hasUpdated=true,this.firstUpdated(t)),this.updated(t);}_$EM(){this._$AL=new Map,this.isUpdatePending=false;}get updateComplete(){return this.getUpdateComplete()}getUpdateComplete(){return this._$ES}shouldUpdate(t){return  true}update(t){this._$Eq&&=this._$Eq.forEach(t=>this._$ET(t,this[t])),this._$EM();}updated(t){}firstUpdated(t){}};y$1.elementStyles=[],y$1.shadowRootOptions={mode:"open"},y$1[d$1("elementProperties")]=new Map,y$1[d$1("finalized")]=new Map,p$2?.({ReactiveElement:y$1}),(a$1.reactiveElementVersions??=[]).push("2.1.2");
 
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
  */
-const t=globalThis,i$1=t=>t,s$1=t.trustedTypes,e=s$1?s$1.createPolicy("lit-html",{createHTML:t=>t}):void 0,h="$lit$",o$1=`lit$${Math.random().toFixed(9).slice(2)}$`,n="?"+o$1,r=`<${n}>`,l=document,c=()=>l.createComment(""),a=t=>null===t||"object"!=typeof t&&"function"!=typeof t,u=Array.isArray,d=t=>u(t)||"function"==typeof t?.[Symbol.iterator],f="[ \t\n\f\r]",v=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,_=/-->/g,m=/>/g,p=RegExp(`>|${f}(?:([^\\s"'>=/]+)(${f}*=${f}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),g=/'/g,$=/"/g,y=/^(?:script|style|textarea|title)$/i,x=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),b=x(1),w=x(2),E=Symbol.for("lit-noChange"),A=Symbol.for("lit-nothing"),C=new WeakMap,P=l.createTreeWalker(l,129);function V(t,i){if(!u(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==e?e.createHTML(i):i}const N=(t,i)=>{const s=t.length-1,e=[];let n,l=2===i?"<svg>":3===i?"<math>":"",c=v;for(let i=0;i<s;i++){const s=t[i];let a,u,d=-1,f=0;for(;f<s.length&&(c.lastIndex=f,u=c.exec(s),null!==u);)f=c.lastIndex,c===v?"!--"===u[1]?c=_:void 0!==u[1]?c=m:void 0!==u[2]?(y.test(u[2])&&(n=RegExp("</"+u[2],"g")),c=p):void 0!==u[3]&&(c=p):c===p?">"===u[0]?(c=n??v,d=-1):void 0===u[1]?d=-2:(d=c.lastIndex-u[2].length,a=u[1],c=void 0===u[3]?p:'"'===u[3]?$:g):c===$||c===g?c=p:c===_||c===m?c=v:(c=p,n=void 0);const x=c===p&&t[i+1].startsWith("/>")?" ":"";l+=c===v?s+r:d>=0?(e.push(a),s.slice(0,d)+h+s.slice(d)+o$1+x):s+o$1+(-2===d?i:x);}return [V(t,l+(t[s]||"<?>")+(2===i?"</svg>":3===i?"</math>":"")),e]};class S{constructor({strings:t,_$litType$:i},e){let r;this.parts=[];let l=0,a=0;const u=t.length-1,d=this.parts,[f,v]=N(t,i);if(this.el=S.createElement(f,e),P.currentNode=this.el.content,2===i||3===i){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes);}for(;null!==(r=P.nextNode())&&d.length<u;){if(1===r.nodeType){if(r.hasAttributes())for(const t of r.getAttributeNames())if(t.endsWith(h)){const i=v[a++],s=r.getAttribute(t).split(o$1),e=/([.?@])?(.*)/.exec(i);d.push({type:1,index:l,name:e[2],strings:s,ctor:"."===e[1]?I:"?"===e[1]?L:"@"===e[1]?z:H}),r.removeAttribute(t);}else t.startsWith(o$1)&&(d.push({type:6,index:l}),r.removeAttribute(t));if(y.test(r.tagName)){const t=r.textContent.split(o$1),i=t.length-1;if(i>0){r.textContent=s$1?s$1.emptyScript:"";for(let s=0;s<i;s++)r.append(t[s],c()),P.nextNode(),d.push({type:2,index:++l});r.append(t[i],c());}}}else if(8===r.nodeType)if(r.data===n)d.push({type:2,index:l});else {let t=-1;for(;-1!==(t=r.data.indexOf(o$1,t+1));)d.push({type:7,index:l}),t+=o$1.length-1;}l++;}}static createElement(t,i){const s=l.createElement("template");return s.innerHTML=t,s}}function M(t,i,s=t,e){if(i===E)return i;let h=void 0!==e?s._$Co?.[e]:s._$Cl;const o=a(i)?void 0:i._$litDirective$;return h?.constructor!==o&&(h?._$AO?.(false),void 0===o?h=void 0:(h=new o(t),h._$AT(t,s,e)),void 0!==e?(s._$Co??=[])[e]=h:s._$Cl=h),void 0!==h&&(i=M(t,h._$AS(t,i.values),h,e)),i}class R{constructor(t,i){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:i},parts:s}=this._$AD,e=(t?.creationScope??l).importNode(i,true);P.currentNode=e;let h=P.nextNode(),o=0,n=0,r=s[0];for(;void 0!==r;){if(o===r.index){let i;2===r.type?i=new k(h,h.nextSibling,this,t):1===r.type?i=new r.ctor(h,r.name,r.strings,this,t):6===r.type&&(i=new Z(h,this,t)),this._$AV.push(i),r=s[++n];}o!==r?.index&&(h=P.nextNode(),o++);}return P.currentNode=l,e}p(t){let i=0;for(const s of this._$AV) void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class k{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,i,s,e){this.type=2,this._$AH=A,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cv=e?.isConnected??true;}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===t?.nodeType&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=M(this,t,i),a(t)?t===A||null==t||""===t?(this._$AH!==A&&this._$AR(),this._$AH=A):t!==this._$AH&&t!==E&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):d(t)?this.k(t):this._(t);}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t));}_(t){this._$AH!==A&&a(this._$AH)?this._$AA.nextSibling.data=t:this.T(l.createTextNode(t)),this._$AH=t;}$(t){const{values:i,_$litType$:s}=t,e="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=S.createElement(V(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===e)this._$AH.p(i);else {const t=new R(e,this),s=t.u(this.options);t.p(i),this.T(s),this._$AH=t;}}_$AC(t){let i=C.get(t.strings);return void 0===i&&C.set(t.strings,i=new S(t)),i}k(t){u(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const h of t)e===i.length?i.push(s=new k(this.O(c()),this.O(c()),this,this.options)):s=i[e],s._$AI(h),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,s){for(this._$AP?.(false,true,s);t!==this._$AB;){const s=i$1(t).nextSibling;i$1(t).remove(),t=s;}}setConnected(t){ void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t));}}class H{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,i,s,e,h){this.type=1,this._$AH=A,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=h,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=A;}_$AI(t,i=this,s,e){const h=this.strings;let o=false;if(void 0===h)t=M(this,t,i,0),o=!a(t)||t!==this._$AH&&t!==E,o&&(this._$AH=t);else {const e=t;let n,r;for(t=h[0],n=0;n<h.length-1;n++)r=M(this,e[s+n],i,n),r===E&&(r=this._$AH[n]),o||=!a(r)||r!==this._$AH[n],r===A?t=A:t!==A&&(t+=(r??"")+h[n+1]),this._$AH[n]=r;}o&&!e&&this.j(t);}j(t){t===A?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"");}}class I extends H{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===A?void 0:t;}}class L extends H{constructor(){super(...arguments),this.type=4;}j(t){this.element.toggleAttribute(this.name,!!t&&t!==A);}}class z extends H{constructor(t,i,s,e,h){super(t,i,s,e,h),this.type=5;}_$AI(t,i=this){if((t=M(this,t,i,0)??A)===E)return;const s=this._$AH,e=t===A&&s!==A||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,h=t!==A&&(s===A||e);e&&this.element.removeEventListener(this.name,this,s),h&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t);}}class Z{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){M(this,t);}}const B=t.litHtmlPolyfillSupport;B?.(S,k),(t.litHtmlVersions??=[]).push("3.3.3");const D=(t,i,s)=>{const e=s?.renderBefore??i;let h=e._$litPart$;if(void 0===h){const t=s?.renderBefore??null;e._$litPart$=h=new k(i.insertBefore(c(),t),t,void 0,s??{});}return h._$AI(t),h};
+const t$2=globalThis,i$3=t=>t,s$2=t$2.trustedTypes,e$1=s$2?s$2.createPolicy("lit-html",{createHTML:t=>t}):void 0,h$1="$lit$",o$1=`lit$${Math.random().toFixed(9).slice(2)}$`,n="?"+o$1,r=`<${n}>`,l=document,c$1=()=>l.createComment(""),a=t=>null===t||"object"!=typeof t&&"function"!=typeof t,u$2=Array.isArray,d=t=>u$2(t)||"function"==typeof t?.[Symbol.iterator],f="[ \t\n\f\r]",v$1=/<(?:(!--|\/[^a-zA-Z])|(\/?[a-zA-Z][^>\s]*)|(\/?$))/g,_=/-->/g,m$1=/>/g,p$1=RegExp(`>|${f}(?:([^\\s"'>=/]+)(${f}*=${f}*(?:[^ \t\n\f\r"'\`<>=]|("|')|))|$)`,"g"),g=/'/g,$=/"/g,y=/^(?:script|style|textarea|title)$/i,x=t=>(i,...s)=>({_$litType$:t,strings:i,values:s}),b=x(1),w=x(2),E=Symbol.for("lit-noChange"),A=Symbol.for("lit-nothing"),C=new WeakMap,P=l.createTreeWalker(l,129);function V(t,i){if(!u$2(t)||!t.hasOwnProperty("raw"))throw Error("invalid template strings array");return void 0!==e$1?e$1.createHTML(i):i}const N=(t,i)=>{const s=t.length-1,e=[];let n,l=2===i?"<svg>":3===i?"<math>":"",c=v$1;for(let i=0;i<s;i++){const s=t[i];let a,u,d=-1,f=0;for(;f<s.length&&(c.lastIndex=f,u=c.exec(s),null!==u);)f=c.lastIndex,c===v$1?"!--"===u[1]?c=_:void 0!==u[1]?c=m$1:void 0!==u[2]?(y.test(u[2])&&(n=RegExp("</"+u[2],"g")),c=p$1):void 0!==u[3]&&(c=p$1):c===p$1?">"===u[0]?(c=n??v$1,d=-1):void 0===u[1]?d=-2:(d=c.lastIndex-u[2].length,a=u[1],c=void 0===u[3]?p$1:'"'===u[3]?$:g):c===$||c===g?c=p$1:c===_||c===m$1?c=v$1:(c=p$1,n=void 0);const x=c===p$1&&t[i+1].startsWith("/>")?" ":"";l+=c===v$1?s+r:d>=0?(e.push(a),s.slice(0,d)+h$1+s.slice(d)+o$1+x):s+o$1+(-2===d?i:x);}return [V(t,l+(t[s]||"<?>")+(2===i?"</svg>":3===i?"</math>":"")),e]};class S{constructor({strings:t,_$litType$:i},e){let r;this.parts=[];let l=0,a=0;const u=t.length-1,d=this.parts,[f,v]=N(t,i);if(this.el=S.createElement(f,e),P.currentNode=this.el.content,2===i||3===i){const t=this.el.content.firstChild;t.replaceWith(...t.childNodes);}for(;null!==(r=P.nextNode())&&d.length<u;){if(1===r.nodeType){if(r.hasAttributes())for(const t of r.getAttributeNames())if(t.endsWith(h$1)){const i=v[a++],s=r.getAttribute(t).split(o$1),e=/([.?@])?(.*)/.exec(i);d.push({type:1,index:l,name:e[2],strings:s,ctor:"."===e[1]?I:"?"===e[1]?L:"@"===e[1]?z:H}),r.removeAttribute(t);}else t.startsWith(o$1)&&(d.push({type:6,index:l}),r.removeAttribute(t));if(y.test(r.tagName)){const t=r.textContent.split(o$1),i=t.length-1;if(i>0){r.textContent=s$2?s$2.emptyScript:"";for(let s=0;s<i;s++)r.append(t[s],c$1()),P.nextNode(),d.push({type:2,index:++l});r.append(t[i],c$1());}}}else if(8===r.nodeType)if(r.data===n)d.push({type:2,index:l});else {let t=-1;for(;-1!==(t=r.data.indexOf(o$1,t+1));)d.push({type:7,index:l}),t+=o$1.length-1;}l++;}}static createElement(t,i){const s=l.createElement("template");return s.innerHTML=t,s}}function M$1(t,i,s=t,e){if(i===E)return i;let h=void 0!==e?s._$Co?.[e]:s._$Cl;const o=a(i)?void 0:i._$litDirective$;return h?.constructor!==o&&(h?._$AO?.(false),void 0===o?h=void 0:(h=new o(t),h._$AT(t,s,e)),void 0!==e?(s._$Co??=[])[e]=h:s._$Cl=h),void 0!==h&&(i=M$1(t,h._$AS(t,i.values),h,e)),i}class R{constructor(t,i){this._$AV=[],this._$AN=void 0,this._$AD=t,this._$AM=i;}get parentNode(){return this._$AM.parentNode}get _$AU(){return this._$AM._$AU}u(t){const{el:{content:i},parts:s}=this._$AD,e=(t?.creationScope??l).importNode(i,true);P.currentNode=e;let h=P.nextNode(),o=0,n=0,r=s[0];for(;void 0!==r;){if(o===r.index){let i;2===r.type?i=new k(h,h.nextSibling,this,t):1===r.type?i=new r.ctor(h,r.name,r.strings,this,t):6===r.type&&(i=new Z(h,this,t)),this._$AV.push(i),r=s[++n];}o!==r?.index&&(h=P.nextNode(),o++);}return P.currentNode=l,e}p(t){let i=0;for(const s of this._$AV) void 0!==s&&(void 0!==s.strings?(s._$AI(t,s,i),i+=s.strings.length-2):s._$AI(t[i])),i++;}}class k{get _$AU(){return this._$AM?._$AU??this._$Cv}constructor(t,i,s,e){this.type=2,this._$AH=A,this._$AN=void 0,this._$AA=t,this._$AB=i,this._$AM=s,this.options=e,this._$Cv=e?.isConnected??true;}get parentNode(){let t=this._$AA.parentNode;const i=this._$AM;return void 0!==i&&11===t?.nodeType&&(t=i.parentNode),t}get startNode(){return this._$AA}get endNode(){return this._$AB}_$AI(t,i=this){t=M$1(this,t,i),a(t)?t===A||null==t||""===t?(this._$AH!==A&&this._$AR(),this._$AH=A):t!==this._$AH&&t!==E&&this._(t):void 0!==t._$litType$?this.$(t):void 0!==t.nodeType?this.T(t):d(t)?this.k(t):this._(t);}O(t){return this._$AA.parentNode.insertBefore(t,this._$AB)}T(t){this._$AH!==t&&(this._$AR(),this._$AH=this.O(t));}_(t){this._$AH!==A&&a(this._$AH)?this._$AA.nextSibling.data=t:this.T(l.createTextNode(t)),this._$AH=t;}$(t){const{values:i,_$litType$:s}=t,e="number"==typeof s?this._$AC(t):(void 0===s.el&&(s.el=S.createElement(V(s.h,s.h[0]),this.options)),s);if(this._$AH?._$AD===e)this._$AH.p(i);else {const t=new R(e,this),s=t.u(this.options);t.p(i),this.T(s),this._$AH=t;}}_$AC(t){let i=C.get(t.strings);return void 0===i&&C.set(t.strings,i=new S(t)),i}k(t){u$2(this._$AH)||(this._$AH=[],this._$AR());const i=this._$AH;let s,e=0;for(const h of t)e===i.length?i.push(s=new k(this.O(c$1()),this.O(c$1()),this,this.options)):s=i[e],s._$AI(h),e++;e<i.length&&(this._$AR(s&&s._$AB.nextSibling,e),i.length=e);}_$AR(t=this._$AA.nextSibling,s){for(this._$AP?.(false,true,s);t!==this._$AB;){const s=i$3(t).nextSibling;i$3(t).remove(),t=s;}}setConnected(t){ void 0===this._$AM&&(this._$Cv=t,this._$AP?.(t));}}class H{get tagName(){return this.element.tagName}get _$AU(){return this._$AM._$AU}constructor(t,i,s,e,h){this.type=1,this._$AH=A,this._$AN=void 0,this.element=t,this.name=i,this._$AM=e,this.options=h,s.length>2||""!==s[0]||""!==s[1]?(this._$AH=Array(s.length-1).fill(new String),this.strings=s):this._$AH=A;}_$AI(t,i=this,s,e){const h=this.strings;let o=false;if(void 0===h)t=M$1(this,t,i,0),o=!a(t)||t!==this._$AH&&t!==E,o&&(this._$AH=t);else {const e=t;let n,r;for(t=h[0],n=0;n<h.length-1;n++)r=M$1(this,e[s+n],i,n),r===E&&(r=this._$AH[n]),o||=!a(r)||r!==this._$AH[n],r===A?t=A:t!==A&&(t+=(r??"")+h[n+1]),this._$AH[n]=r;}o&&!e&&this.j(t);}j(t){t===A?this.element.removeAttribute(this.name):this.element.setAttribute(this.name,t??"");}}class I extends H{constructor(){super(...arguments),this.type=3;}j(t){this.element[this.name]=t===A?void 0:t;}}class L extends H{constructor(){super(...arguments),this.type=4;}j(t){this.element.toggleAttribute(this.name,!!t&&t!==A);}}class z extends H{constructor(t,i,s,e,h){super(t,i,s,e,h),this.type=5;}_$AI(t,i=this){if((t=M$1(this,t,i,0)??A)===E)return;const s=this._$AH,e=t===A&&s!==A||t.capture!==s.capture||t.once!==s.once||t.passive!==s.passive,h=t!==A&&(s===A||e);e&&this.element.removeEventListener(this.name,this,s),h&&this.element.addEventListener(this.name,this,t),this._$AH=t;}handleEvent(t){"function"==typeof this._$AH?this._$AH.call(this.options?.host??this.element,t):this._$AH.handleEvent(t);}}class Z{constructor(t,i,s){this.element=t,this.type=6,this._$AN=void 0,this._$AM=i,this.options=s;}get _$AU(){return this._$AM._$AU}_$AI(t){M$1(this,t);}}const j={I:k},B=t$2.litHtmlPolyfillSupport;B?.(S,k),(t$2.litHtmlVersions??=[]).push("3.3.3");const D=(t,i,s)=>{const e=s?.renderBefore??i;let h=e._$litPart$;if(void 0===h){const t=s?.renderBefore??null;e._$litPart$=h=new k(i.insertBefore(c$1(),t),t,void 0,s??{});}return h._$AI(t),h};
 
 /**
  * @license
  * Copyright 2017 Google LLC
  * SPDX-License-Identifier: BSD-3-Clause
- */const s=globalThis;class i extends y$1{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0;}createRenderRoot(){const t=super.createRenderRoot();return this.renderOptions.renderBefore??=t.firstChild,t}update(t){const r=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=D(r,this.renderRoot,this.renderOptions);}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(true);}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(false);}render(){return E}}i._$litElement$=true,i["finalized"]=true,s.litElementHydrateSupport?.({LitElement:i});const o=s.litElementPolyfillSupport;o?.({LitElement:i});(s.litElementVersions??=[]).push("4.2.2");
+ */const s$1=globalThis;let i$2 = class i extends y$1{constructor(){super(...arguments),this.renderOptions={host:this},this._$Do=void 0;}createRenderRoot(){const t=super.createRenderRoot();return this.renderOptions.renderBefore??=t.firstChild,t}update(t){const r=this.render();this.hasUpdated||(this.renderOptions.isConnected=this.isConnected),super.update(t),this._$Do=D(r,this.renderRoot,this.renderOptions);}connectedCallback(){super.connectedCallback(),this._$Do?.setConnected(true);}disconnectedCallback(){super.disconnectedCallback(),this._$Do?.setConnected(false);}render(){return E}};i$2._$litElement$=true,i$2["finalized"]=true,s$1.litElementHydrateSupport?.({LitElement:i$2});const o=s$1.litElementPolyfillSupport;o?.({LitElement:i$2});(s$1.litElementVersions??=[]).push("4.2.2");
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const t$1={CHILD:2},e=t=>(...e)=>({_$litDirective$:t,values:e});let i$1 = class i{constructor(t){}get _$AU(){return this._$AM._$AU}_$AT(t,e,i){this._$Ct=t,this._$AM=e,this._$Ci=i;}_$AS(t,e){return this.update(t,e)}update(t,e){return this.render(...e)}};
+
+/**
+ * @license
+ * Copyright 2020 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */const {I:t}=j,i=o=>o,s=()=>document.createComment(""),v=(o,n,e)=>{const l=o._$AA.parentNode,d=void 0===n?o._$AB:n._$AA;if(void 0===e){const i=l.insertBefore(s(),d),n=l.insertBefore(s(),d);e=new t(i,n,o,o.options);}else {const t=e._$AB.nextSibling,n=e._$AM,c=n!==o;if(c){let t;e._$AQ?.(o),e._$AM=o,void 0!==e._$AP&&(t=o._$AU)!==n._$AU&&e._$AP(t);}if(t!==d||c){let o=e._$AA;for(;o!==t;){const t=i(o).nextSibling;i(l).insertBefore(o,d),o=t;}}}return e},u$1=(o,t,i=o)=>(o._$AI(t,i),o),m={},p=(o,t=m)=>o._$AH=t,M=o=>o._$AH,h=o=>{o._$AR(),o._$AA.remove();};
+
+/**
+ * @license
+ * Copyright 2017 Google LLC
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+const u=(e,s,t)=>{const r=new Map;for(let l=s;l<=t;l++)r.set(e[l],l);return r},c=e(class extends i$1{constructor(e){if(super(e),e.type!==t$1.CHILD)throw Error("repeat() can only be used in text expressions")}dt(e,s,t){let r;void 0===t?t=s:void 0!==s&&(r=s);const l=[],o=[];let i=0;for(const s of e)l[i]=r?r(s,i):i,o[i]=t(s,i),i++;return {values:o,keys:l}}render(e,s,t){return this.dt(e,s,t).values}update(s,[t,r,c]){const d=M(s),{values:p$1,keys:a}=this.dt(t,r,c);if(!Array.isArray(d))return this.ut=a,p$1;const h$1=this.ut??=[],v$1=[];let m,y,x=0,j=d.length-1,k=0,w=p$1.length-1;for(;x<=j&&k<=w;)if(null===d[x])x++;else if(null===d[j])j--;else if(h$1[x]===a[k])v$1[k]=u$1(d[x],p$1[k]),x++,k++;else if(h$1[j]===a[w])v$1[w]=u$1(d[j],p$1[w]),j--,w--;else if(h$1[x]===a[w])v$1[w]=u$1(d[x],p$1[w]),v(s,v$1[w+1],d[x]),x++,w--;else if(h$1[j]===a[k])v$1[k]=u$1(d[j],p$1[k]),v(s,d[x],d[j]),j--,k++;else if(void 0===m&&(m=u(a,k,w),y=u(h$1,x,j)),m.has(h$1[x]))if(m.has(h$1[j])){const e=y.get(a[k]),t=void 0!==e?d[e]:null;if(null===t){const e=v(s,d[x]);u$1(e,p$1[k]),v$1[k]=e;}else v$1[k]=u$1(t,p$1[k]),v(s,d[x],t),d[e]=null;k++;}else h(d[j]),j--;else h(d[x]),x++;for(;k<=w;){const e=v(s,v$1[w+1]);u$1(e,p$1[k]),v$1[k++]=e;}for(;x<=j;){const e=d[x++];null!==e&&h(e);}return this.ut=a,p(s,v$1),E}});
 
 // All calculations use watts. Source readings must remain unknown when invalid.
 function watts(hass, entity) {
@@ -137,7 +157,198 @@ class BalanceGracePeriod {
     }
 }
 
-class EnergyFlowEditor extends i {
+const DEFAULT_ANIMATION_POWER_MAX = 10_000;
+const MAX_PARTICLES = 6;
+const MIN_SPEED = 14;
+const MAX_SPEED = 48;
+/** Bounded visual intensity; actual readings are never capped or smoothed. */
+function powerEnvelope(power, maxPower = DEFAULT_ANIMATION_POWER_MAX) {
+    const active = power !== null && Number.isFinite(power) && Math.abs(power) > 1;
+    if (!active)
+        return { active: false, direction: 1, speed: 0, count: 0, brightness: 0 };
+    const cap = Math.max(1, Number.isFinite(maxPower) && maxPower > 0 ? maxPower : DEFAULT_ANIMATION_POWER_MAX);
+    const intensity = Math.log1p(Math.min(Math.abs(power), cap) / 100) / Math.log1p(cap / 100);
+    return {
+        active: true,
+        direction: power < 0 ? -1 : 1,
+        speed: MIN_SPEED + (MAX_SPEED - MIN_SPEED) * intensity,
+        count: 2 + (MAX_PARTICLES - 2) * intensity,
+        brightness: .4 + .55 * intensity,
+    };
+}
+const ease = (current, target, dt, tau) => target + (current - target) * Math.exp(-dt / tau);
+// Add particles between existing ones; changing density never repositions them.
+const OFFSETS = [0, .5, 1 / 6, 4 / 6, 2 / 6, 5 / 6];
+class FlowMotion {
+    constructor(length, seed = 0) {
+        this.length = length;
+        this.speed = 0;
+        this.count = 0;
+        this.brightness = 0;
+        this.visibility = 0;
+        this.direction = 1;
+        this.target = powerEnvelope(0);
+        this.phase = seed;
+    }
+    setTarget(power, maxPower) {
+        this.target = powerEnvelope(power, maxPower);
+        // A new stream can start in either direction without a needless reversal.
+        if (this.speed === 0 && this.visibility === 0 && this.target.active)
+            this.direction = this.target.direction;
+    }
+    get moving() { return this.target.active || this.speed > .01 || this.visibility > .002; }
+    step(seconds) {
+        // Resuming a background tab must not fast-forward particle positions.
+        const dt = Math.max(0, Math.min(seconds, .064));
+        const reversing = this.target.active && this.target.direction !== this.direction;
+        const running = this.target.active && !reversing;
+        const previousSpeed = this.speed;
+        this.speed = ease(this.speed, running ? this.target.speed : 0, dt, reversing ? .16 : running ? .45 : .25);
+        this.visibility = ease(this.visibility, running ? 1 : 0, dt, reversing ? .1 : running ? .22 : .18);
+        this.count = ease(this.count, this.target.active ? this.target.count : 0, dt, .4);
+        this.brightness = ease(this.brightness, this.target.brightness, dt, .45);
+        this.phase = ((this.phase + this.direction * (previousSpeed + this.speed) / 2 * dt / this.length) % 1 + 1) % 1;
+        if (reversing && this.speed < 1 && this.visibility < .025) {
+            this.direction = this.target.direction;
+            this.speed = 0;
+            this.visibility = 0;
+        }
+        if (!this.target.active && this.speed < .01 && this.visibility < .002) {
+            this.speed = this.visibility = this.count = this.brightness = 0;
+        }
+    }
+    particle(index) {
+        const t = (this.phase + OFFSETS[index]) % 1;
+        const density = Math.max(0, Math.min(1, this.count - index));
+        // Fade into the junction and nodes, then emerge at the other end.
+        const edge = Math.min(1, t / .12, (1 - t) / .12);
+        return { t, opacity: density * this.visibility * this.brightness * Math.max(0, edge) };
+    }
+}
+
+const FLOW_GEOMETRY = {
+    'solar-flow': { x1: 230, y1: 115, x2: 230, y2: 192, hubAtEnd: true },
+    'grid-flow': { x1: 113, y1: 192, x2: 230, y2: 192, hubAtEnd: true },
+    'battery-flow': { x1: 230, y1: 269, x2: 230, y2: 192, hubAtEnd: true },
+    'home-flow': { x1: 230, y1: 192, x2: 331, y2: 192, hubAtEnd: false },
+};
+/** One frame loop per visible card. Lit renders sensor values, never animation frames. */
+class FlowAnimator {
+    constructor(host) {
+        this.host = host;
+        this.streams = new Map();
+        this.connected = false;
+        this.visible = true;
+        this.junction = 0;
+        this.runStateChanged = () => {
+            this.root?.toggleAttribute('data-motion', this.motionAllowed);
+            const hasMotion = [...this.streams.values()].some(s => s.motion.moving);
+            if (!hasMotion) {
+                this.junction = 0;
+                this.glow?.setAttribute('opacity', '0');
+                this.core?.setAttribute('opacity', '.5');
+            }
+            const active = this.connected && this.visible && !document.hidden && this.motionAllowed && this.root && hasMotion;
+            if (!active) {
+                this.cancelFrame();
+                if (!this.motionAllowed)
+                    this.glow?.setAttribute('opacity', '0');
+                return;
+            }
+            if (this.frame === undefined)
+                this.frame = requestAnimationFrame(this.tick);
+        };
+        this.tick = (time) => {
+            this.frame = undefined;
+            const dt = this.lastTime === undefined ? 1 / 60 : Math.min(.064, (time - this.lastTime) / 1000);
+            this.lastTime = time;
+            let presence = 0;
+            let arrival = 0;
+            for (const [id, stream] of this.streams) {
+                const g = FLOW_GEOMETRY[id];
+                const motion = stream.motion;
+                if (!motion.moving)
+                    continue;
+                motion.step(dt);
+                presence = Math.max(presence, motion.visibility * motion.brightness);
+                const angle = Math.atan2(g.y2 - g.y1, g.x2 - g.x1) * 180 / Math.PI + (motion.direction < 0 ? 180 : 0);
+                for (let i = 0; i < MAX_PARTICLES; i++) {
+                    const particle = motion.particle(i);
+                    const element = stream.particles[i];
+                    if (!element)
+                        continue;
+                    element.setAttribute('transform', `translate(${g.x1 + (g.x2 - g.x1) * particle.t},${g.y1 + (g.y2 - g.y1) * particle.t}) rotate(${angle})`);
+                    element.setAttribute('opacity', particle.opacity.toFixed(3));
+                    const distanceToHub = g.hubAtEnd ? 1 - particle.t : particle.t;
+                    arrival = Math.max(arrival, Math.max(0, 1 - distanceToHub / .2) * particle.opacity);
+                }
+            }
+            this.junction += (arrival - this.junction) * (1 - Math.exp(-dt / .2));
+            this.glow?.setAttribute('r', String(13 + presence * 3 + this.junction * 2));
+            this.glow?.setAttribute('opacity', String(presence * .38 + this.junction * .24));
+            this.core?.setAttribute('opacity', String(.5 + presence * .2 + this.junction * .3));
+            this.runStateChanged();
+        };
+    }
+    connect() {
+        if (this.connected)
+            return;
+        this.connected = true;
+        this.media = window.matchMedia('(prefers-reduced-motion: reduce)');
+        this.media.addEventListener('change', this.runStateChanged);
+        document.addEventListener('visibilitychange', this.runStateChanged);
+        if (typeof IntersectionObserver !== 'undefined') {
+            this.observer = new IntersectionObserver(entries => {
+                this.visible = entries[0]?.isIntersecting ?? true;
+                this.runStateChanged();
+            });
+            this.observer.observe(this.host);
+        }
+    }
+    disconnect() {
+        this.connected = false;
+        this.cancelFrame();
+        this.media?.removeEventListener('change', this.runStateChanged);
+        document.removeEventListener('visibilitychange', this.runStateChanged);
+        this.observer?.disconnect();
+        this.observer = undefined;
+        this.streams.clear();
+        this.root = undefined;
+        this.glow = this.core = undefined;
+        this.visible = true;
+        this.junction = 0;
+    }
+    sync(root, powers, maxPower, mode) {
+        this.root = root ?? undefined;
+        this.mode = mode;
+        this.glow = root?.querySelector('.junction-glow') ?? undefined;
+        this.core = root?.querySelector('.junction') ?? undefined;
+        for (const [index, id] of Object.keys(FLOW_GEOMETRY).entries()) {
+            const group = root?.querySelector(`[data-flow="${id}"]`);
+            if (!group) {
+                this.streams.delete(id);
+                continue;
+            }
+            let stream = this.streams.get(id);
+            if (!stream) {
+                const g = FLOW_GEOMETRY[id];
+                stream = { motion: new FlowMotion(Math.hypot(g.x2 - g.x1, g.y2 - g.y1), index * .137), particles: [] };
+                this.streams.set(id, stream);
+            }
+            stream.particles = Array.from(group.querySelectorAll('.flow-particle'));
+            stream.motion.setTarget(powers[id], maxPower);
+        }
+        this.runStateChanged();
+    }
+    get motionAllowed() { return this.mode === true || (this.mode !== false && !this.media?.matches); }
+    cancelFrame() {
+        if (this.frame !== undefined)
+            cancelAnimationFrame(this.frame);
+        this.frame = this.lastTime = undefined;
+    }
+}
+
+class EnergyFlowEditor extends i$2 {
     static { this.properties = { hass: { attribute: false }, config: { state: true } }; }
     setConfig(config) { this.config = { ...config }; }
     updateConfig(patch) {
@@ -175,7 +386,7 @@ class EnergyFlowEditor extends i {
         if (!this.hass || !this.config)
             return A;
         return b `<div class="editor">
-      ${this.form([{ name: 'title', label: 'Title', selector: { text: {} } }, this.entity('solar_entity', 'Solar production'), this.entity('battery_soc_entity', 'Battery state of charge', true), { name: 'animation_mode', label: 'Flow animation', selector: { select: { options: [{ value: 'auto', label: 'Follow device preference' }, { value: 'on', label: 'Always animate' }, { value: 'off', label: 'Off' }] } } }, { name: 'sort_by_power', label: 'Sort consumers by current power', selector: { boolean: {} } }], { ...this.config, animation_mode: this.config.animation === true ? 'on' : this.config.animation === false ? 'off' : 'auto' }, data => {
+      ${this.form([{ name: 'title', label: 'Title', selector: { text: {} } }, this.entity('solar_entity', 'Solar production'), this.entity('battery_soc_entity', 'Battery state of charge', true), { name: 'animation_mode', label: 'Flow animation', selector: { select: { options: [{ value: 'auto', label: 'Follow device preference' }, { value: 'on', label: 'Always animate' }, { value: 'off', label: 'Off' }] } } }, { name: 'animation_power_max', label: 'Full animation at (W)', selector: { number: { min: 100, max: 1000000, step: 100, mode: 'box', unit_of_measurement: 'W' } } }, { name: 'sort_by_power', label: 'Sort consumers by current power', selector: { boolean: {} } }], { ...this.config, animation_power_max: this.config.animation_power_max ?? DEFAULT_ANIMATION_POWER_MAX, animation_mode: this.config.animation === true ? 'on' : this.config.animation === false ? 'off' : 'auto' }, data => {
             const { animation_mode, ...config } = data;
             const next = { ...this.config, ...config };
             if (animation_mode === 'auto')
@@ -185,7 +396,7 @@ class EnergyFlowEditor extends i {
             this.config = next;
             this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: next }, bubbles: true, composed: true }));
         })}
-      <p>Follow device preference respects reduced motion. Always animate enables moving flow dots even when reduced motion is enabled on this device. Idle flows remain still.</p>
+      <p>Follow device preference respects reduced motion. Always animate enables moving flow dots even when reduced motion is enabled on this device. Idle flows fade to a stop. Full animation at sets the power where speed, particle density, and brightness reach their limits (default: 10,000 W). Higher readings still display normally.</p>
       ${this.source('grid')}${this.source('battery')}
       <h3>Consumers</h3><p>Choose individual, non-overlapping power sensors. Home consumption is calculated automatically.</p>
       ${(this.config.consumers ?? []).map((device, index) => b `<div class="consumer">
@@ -205,16 +416,17 @@ class EnergyFlowEditor extends i {
       <p>Power sensors must report W or kW. A combined sensor uses positive values for grid import or battery discharge; use invert direction if necessary. Unconfigured sources count as zero.</p>
     </div>`;
     }
-    static { this.styles = i$3 `
+    static { this.styles = i$5 `
     .editor { display:grid;gap:16px; } details { border:1px solid var(--divider-color,#555);border-radius:12px;padding:16px; } summary { cursor:pointer;font-weight:600; } p { font-size:12px;color:var(--secondary-text-color);line-height:1.6; } .check { display:flex;align-items:center;gap:8px;margin:14px 0; } .consumer { padding:16px;border:1px solid var(--divider-color,#555);border-radius:12px; }.actions { display:flex;gap:8px;margin-top:10px; } button { font:inherit;color:var(--primary-color);background:transparent;border:1px solid var(--divider-color,#555);border-radius:6px;padding:8px 12px;cursor:pointer; } button:disabled { opacity:.4; } h3 { margin:0; }
   `; }
 }
 customElements.define('energy-flow-card-editor', EnergyFlowEditor);
 
-class EnergyFlowCard extends i {
+class EnergyFlowCard extends i$2 {
     constructor() {
         super(...arguments);
         this.balanceGrace = new BalanceGracePeriod();
+        this.flowAnimator = new FlowAnimator(this);
     }
     static { this.properties = { hass: { attribute: false }, config: { state: true } }; }
     clearBalanceTimer() {
@@ -225,12 +437,14 @@ class EnergyFlowCard extends i {
     connectedCallback() {
         this.balanceGrace.reset();
         super.connectedCallback();
+        this.flowAnimator.connect();
         this.requestUpdate();
     }
     disconnectedCallback() {
         super.disconnectedCallback();
         this.clearBalanceTimer();
         this.balanceGrace.reset();
+        this.flowAnimator.disconnect();
     }
     willUpdate() {
         this.clearBalanceTimer();
@@ -244,6 +458,17 @@ class EnergyFlowCard extends i {
             }, this.reading.recheckIn);
         }
     }
+    updated() {
+        const m = this.reading;
+        if (!m)
+            return;
+        this.flowAnimator.sync(this.renderRoot.querySelector('.diagram'), {
+            'solar-flow': m.solar,
+            'grid-flow': m.grid ? m.grid.incoming - m.grid.outgoing : null,
+            'battery-flow': m.battery ? m.battery.incoming - m.battery.outgoing : null,
+            'home-flow': m.home,
+        }, this.config.animation_power_max, this.config.animation);
+    }
     static getConfigElement() { return document.createElement('energy-flow-card-editor'); }
     static getStubConfig() { return { type: 'custom:energy-flow-card', title: 'Live energy', consumers: [] }; }
     setConfig(config) {
@@ -251,17 +476,26 @@ class EnergyFlowCard extends i {
             throw new Error('A card configuration is required');
         if (config.consumers && (!Array.isArray(config.consumers) || config.consumers.some(c => !c.entity)))
             throw new Error('Each consumer needs an entity');
+        if (config.animation_power_max !== undefined && (!Number.isFinite(config.animation_power_max) || config.animation_power_max <= 0))
+            throw new Error('Animation power limit must be a positive number in watts');
         this.clearBalanceTimer();
         this.balanceGrace.reset();
         this.config = { ...config, consumers: config.consumers ?? [] };
     }
     getCardSize() { return 5 + (this.config?.consumers?.length ?? 0); }
-    connection(id, path, power, color) {
-        const active = power !== null && Math.abs(power) > 1;
-        const reverse = (power ?? 0) < 0;
-        const duration = Math.max(1.2, 5 - Math.log10(Math.abs(power ?? 0) + 1));
-        return w `<path d=${path} class="wire" stroke=${color}/>
-      ${active ? w `<path id=${id} d=${path} class="current" stroke=${color} style=${`animation-duration:${duration}s;animation-direction:${reverse ? 'reverse' : 'normal'}`}/>` : A}`;
+    connection(id, power, color) {
+        const g = FLOW_GEOMETRY[id];
+        const visual = powerEnvelope(power, this.config.animation_power_max ?? DEFAULT_ANIMATION_POWER_MAX);
+        const angle = Math.atan2(g.y2 - g.y1, g.x2 - g.x1) * 180 / Math.PI + (visual.direction < 0 ? 180 : 0);
+        return w `<g data-flow=${id} style=${`color:${color}`} aria-hidden="true" class="energy-flow">
+      <path d=${`M${g.x1} ${g.y1} L${g.x2} ${g.y2}`} class="wire"/>
+      <path class="flow-static" d="M-4 -3 L0 0 L-4 3" opacity=${visual.active ? visual.brightness : 0}
+        transform=${`translate(${(g.x1 + g.x2) / 2},${(g.y1 + g.y2) / 2}) rotate(${angle})`}/>
+      <g class="flow-particles">${Array.from({ length: MAX_PARTICLES }, () => w `<g class="flow-particle" opacity="0">
+        <circle cx="-9" r=".6" opacity=".15"/><circle cx="-6" r="1" opacity=".3"/><circle cx="-3" r="1.4" opacity=".55"/>
+        <circle r="4" opacity=".12"/><circle r="2"/><circle r=".7" fill="white" opacity=".85"/>
+      </g>`)}</g>
+    </g>`;
     }
     moreInfo(entity) {
         if (entity)
@@ -302,30 +536,32 @@ class EnergyFlowCard extends i {
     render() {
         if (!this.hass || !this.config || !this.reading)
             return A;
-        const c = this.config;
+        const c$1 = this.config;
         const m = this.reading;
-        const configured = Boolean(c.solar_entity || c.grid?.entity || c.grid?.import_entity || c.grid?.export_entity || c.battery?.entity || c.battery?.import_entity || c.battery?.export_entity);
+        const configured = Boolean(c$1.solar_entity || c$1.grid?.entity || c$1.grid?.import_entity || c$1.grid?.export_entity || c$1.battery?.entity || c$1.battery?.import_entity || c$1.battery?.export_entity);
         if (!configured)
             return b `<ha-card><div class="empty">Select your solar, grid, and battery sensors in the visual editor to get started.</div></ha-card>`;
-        const batteryPresent = Boolean(c.battery?.entity || c.battery?.import_entity || c.battery?.export_entity);
-        const soc = stateOfCharge(this.hass, c.battery_soc_entity);
+        const batteryPresent = Boolean(c$1.battery?.entity || c$1.battery?.import_entity || c$1.battery?.export_entity);
+        const soc = stateOfCharge(this.hass, c$1.battery_soc_entity);
         const gridNet = m.grid ? m.grid.incoming - m.grid.outgoing : null;
         const batteryNet = m.battery ? m.battery.incoming - m.battery.outgoing : null;
         const battery = batteryAppearance(soc, batteryNet);
-        const gridEntity = c.grid?.entity || (gridNet !== null && gridNet < 0 ? c.grid?.export_entity || c.grid?.import_entity : c.grid?.import_entity || c.grid?.export_entity);
-        const batteryEntity = c.battery?.entity || (batteryNet !== null && batteryNet < -1 ? c.battery?.export_entity || c.battery?.import_entity : c.battery?.import_entity || c.battery?.export_entity) || c.battery_soc_entity;
-        return b `<ha-card>
-      <header><div><span class="eyebrow">POWER FLOW</span><h2>${c.title || 'Live energy'}</h2></div><span class=${`live ${m.updating ? 'updating' : ''}`}><i></i>${m.updating ? 'Updating' : 'Live'}</span></header>
-      <svg class=${`diagram motion-${c.animation === true ? 'on' : c.animation === false ? 'off' : 'auto'}`} viewBox="0 0 460 400" role="group" aria-label="Live power flow: solar, grid, battery, and home meet at a shared junction">
-        ${this.connection('solar-flow', 'M230 115 V192', m.solar, 'var(--ef-solar)')}
-        ${this.connection('grid-flow', 'M113 192 H230', gridNet, 'var(--ef-grid)')}
-        ${batteryPresent ? this.connection('battery-flow', 'M230 269 V192', batteryNet, 'var(--ef-battery)') : A}
-        ${this.connection('home-flow', 'M230 192 H331', m.home, 'var(--ef-home)')}
-        <circle cx="230" cy="192" r="4" class="junction"/>
-        ${this.node(230, 72, 'mdi:solar-power-variant', 'Solar', formatPower(m.solar), 'var(--ef-solar)', 'Production', true, { entity: c.solar_entity })}
+        const gridEntity = c$1.grid?.entity || (gridNet !== null && gridNet < 0 ? c$1.grid?.export_entity || c$1.grid?.import_entity : c$1.grid?.import_entity || c$1.grid?.export_entity);
+        const batteryEntity = c$1.battery?.entity || (batteryNet !== null && batteryNet < -1 ? c$1.battery?.export_entity || c$1.battery?.import_entity : c$1.battery?.import_entity || c$1.battery?.export_entity) || c$1.battery_soc_entity;
+        return b `<ha-card class=${`motion-${c$1.animation === true ? 'on' : c$1.animation === false ? 'off' : 'auto'}`}>
+      <header><div><span class="eyebrow">POWER FLOW</span><h2>${c$1.title || 'Live energy'}</h2></div><span class=${`live ${m.updating ? 'updating' : ''}`}><i></i>${m.updating ? 'Updating' : 'Live'}</span></header>
+      <svg class=${`diagram motion-${c$1.animation === true ? 'on' : c$1.animation === false ? 'off' : 'auto'}`} viewBox="0 0 460 400" role="group" aria-label="Live power flow: solar, grid, battery, and home meet at a shared junction">
+        <defs><radialGradient id="junction-halo"><stop offset="0" stop-color="currentColor" stop-opacity=".8"/><stop offset=".35" stop-color="currentColor" stop-opacity=".25"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></radialGradient></defs>
+        ${this.connection('solar-flow', m.solar, 'var(--ef-solar)')}
+        ${this.connection('grid-flow', gridNet, 'var(--ef-grid)')}
+        ${batteryPresent ? this.connection('battery-flow', batteryNet, 'var(--ef-battery)') : A}
+        ${this.connection('home-flow', m.home, 'var(--ef-home)')}
+        <circle cx="230" cy="192" r="13" class="junction-glow" fill="url(#junction-halo)" opacity="0" aria-hidden="true"/>
+        <circle cx="230" cy="192" r="3.5" class="junction"/>
+        ${this.node(230, 72, 'mdi:solar-power-variant', 'Solar', formatPower(m.solar), 'var(--ef-solar)', 'Production', true, { entity: c$1.solar_entity })}
         ${this.node(70, 192, 'mdi:transmission-tower', 'Grid', formatPower(gridNet === null ? null : Math.abs(gridNet)), 'var(--ef-grid)', gridNet === null ? 'Unavailable' : gridNet < 0 ? 'Exporting' : gridNet > 0 ? 'Importing' : 'Idle', false, { entity: gridEntity })}
         ${this.node(390, 192, 'mdi:home-lightning-bolt-outline', 'Home', formatPower(m.home), 'var(--ef-home)', m.updating ? 'Updating' : 'Calculated', false, { home: true, ring: m.sources, homePower: m.home })}
-        ${batteryPresent ? this.node(230, 312, battery.icon, 'Battery', formatPower(batteryNet === null ? null : Math.abs(batteryNet)), 'var(--ef-battery)', soc !== null ? `${Math.round(soc)}%` : c.battery_soc_entity ? 'SoC —' : undefined, false, { entity: batteryEntity, batteryStatus: battery.status, statusLabel: battery.label }) : A}
+        ${batteryPresent ? this.node(230, 312, battery.icon, 'Battery', formatPower(batteryNet === null ? null : Math.abs(batteryNet)), 'var(--ef-battery)', soc !== null ? `${Math.round(soc)}%` : c$1.battery_soc_entity ? 'SoC —' : undefined, false, { entity: batteryEntity, batteryStatus: battery.status, statusLabel: battery.label }) : A}
       </svg>
       <section class="mix" aria-label="Estimated household power sources">
         <div class="section-title">Home power sources <span>${m.updating ? 'Updating' : 'Estimated mix'}</span></div>
@@ -335,7 +571,7 @@ class EnergyFlowCard extends i {
       </section>
       <section class="consumers">
         <div class="section-title">Consumers <span>${m.consumers.length} ${m.consumers.length === 1 ? 'device' : 'devices'}</span></div>
-        ${m.consumers.map(device => this.consumer(device.name || String(this.hass.states[device.entity]?.attributes.friendly_name || device.entity), device.power, m.home, { entity: device.entity, icon: device.icon, offline: device.unavailable }))}
+        ${c(m.consumers, device => device.entity, device => this.consumer(device.name || String(this.hass.states[device.entity]?.attributes.friendly_name || device.entity), device.power, m.home, { entity: device.entity, icon: device.icon, offline: device.unavailable }))}
         ${this.consumer('Other consumption', m.other, m.home, { icon: 'mdi:dots-horizontal' })}
         ${m.mismatch ? b `<p class="warning" role="status">Measurements do not balance. Check sensor directions, overlapping consumers, and update timing.</p>` : A}
         ${m.home === null && !m.updating ? b `<p class="warning" role="status">Some source sensors are unavailable or do not report W/kW. Totals that depend on them are unavailable.</p>` : A}
@@ -349,11 +585,11 @@ class EnergyFlowCard extends i {
             ? b `<ha-icon .icon=${options.icon || 'mdi:power-plug-outline'}></ha-icon>`
             : b `<ha-state-icon .hass=${this.hass} .stateObj=${state}></ha-state-icon>`}</span>
       <span class="device"><span class="row"><span class="device-name">${name}${options.offline ? b `<span class="offline-badge" title="No usable power reading. Counted as 0 W.">Offline</span>` : A}</span><strong>${formatPower(power)}</strong></span>
-      <span class="row"><span class="track"><span style=${`width:${Math.min(100, share ?? 0)}%`}></span></span><small>${formatShare(power, home)}</small></span></span>`;
+      <span class="row"><span class="track"><span style=${`transform:scaleX(${Math.min(100, share ?? 0) / 100})`}></span></span><small>${formatShare(power, home)}</small></span></span>`;
         return options.entity ? b `<button class="consumer interactive" type="button" @click=${() => this.moreInfo(options.entity)}>${contents}</button>`
             : b `<div class="consumer">${contents}</div>`;
     }
-    static { this.styles = i$3 `
+    static { this.styles = i$5 `
     :host { --ef-solar:#f6bd4f;--ef-grid:#a99af7;--ef-battery:#53d4bd;--ef-home:#68b7ff;display:block; }
     ha-card { overflow:hidden;background:var(--ha-card-background,var(--card-background-color,#191c24));color:var(--primary-text-color,#eee);border-radius:24px; }
     header { display:flex;align-items:center;justify-content:space-between;padding:24px 24px 0; }
@@ -371,9 +607,11 @@ class EnergyFlowCard extends i {
     .interactive { cursor:pointer; }.flow-node:focus-visible { outline:none; }.flow-node:focus-visible .node { stroke-width:4;stroke:var(--primary-color,#68b7ff); }
     text { fill:var(--primary-text-color,#eee);text-anchor:middle;font-family:inherit; }.value { font-size:13px;font-weight:600;font-variant-numeric:tabular-nums; }.sub { font-size:9px;fill:var(--secondary-text-color,#aaa); }.label { font-size:12px;fill:var(--secondary-text-color,#aaa); }
     foreignObject { color:var(--primary-text-color,#eee); }.node-icon { display:flex;align-items:center;justify-content:center;width:24px;height:24px;--mdc-icon-size:24px; }
-    .wire { fill:none;stroke-width:1.5;opacity:.3; }.current { fill:none;stroke-width:4;stroke-linecap:round;stroke-dasharray:1 24;animation:flow linear infinite; }
-    .junction { fill:var(--primary-text-color,#eee); }.motion-off .current { animation:none; }
-    @keyframes flow { from { stroke-dashoffset:0; } to { stroke-dashoffset:-50; } }
+    .energy-flow { pointer-events:none; }.wire { fill:none;stroke:currentColor;stroke-width:1.5;opacity:.23; }
+    .flow-static { fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round; }
+    .flow-particles { display:none;fill:currentColor;filter:drop-shadow(0 0 1.5px currentColor); }
+    .diagram[data-motion] .flow-particles { display:block; }.diagram[data-motion] .flow-static { display:none; }
+    .junction { fill:var(--primary-text-color,#eee); }.junction-glow { pointer-events:none; }
     section { padding:0 24px 20px; }.section-title { display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:600;margin-bottom:14px; }.section-title span { font-size:11px;font-weight:400;color:var(--secondary-text-color); }
     .mix-bar { height:8px;display:flex;overflow:hidden;border-radius:8px;background:var(--divider-color,#333); }.mix-bar div { transition:width .5s; }
     .legend { display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;font-size:11px; }.legend span { display:flex;align-items:center;gap:5px; }.legend i { width:6px;height:6px;border-radius:50%; }.legend b { font-weight:500; }
@@ -384,9 +622,10 @@ class EnergyFlowCard extends i {
     .device { flex:1;min-width:0; }.row { display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px; }.device-name { display:flex;align-items:center;gap:7px;flex-wrap:wrap;overflow-wrap:anywhere;min-width:0; }
     .row strong { white-space:nowrap;font-size:15px;font-weight:650;font-variant-numeric:tabular-nums; }.row small { width:35px;text-align:right;color:var(--secondary-text-color);font-size:11px;font-variant-numeric:tabular-nums; }
     .offline-badge { border:1px solid var(--divider-color,#555);border-radius:5px;padding:2px 5px;font-size:9px;line-height:1.2;color:var(--secondary-text-color);font-weight:400; }
-    .track { flex:1;height:4px;border-radius:4px;background:var(--divider-color,#333);margin-top:6px;overflow:hidden; }.track span { display:block;height:100%;background:var(--ef-home);border-radius:4px;transition:width .5s; }
+    .track { flex:1;height:4px;border-radius:4px;background:var(--divider-color,#333);margin-top:6px;overflow:hidden; }.track span { display:block;width:100%;height:100%;background:var(--ef-home);border-radius:4px;transform-origin:left center;transition:transform .4s cubic-bezier(.22,.61,.36,1); }
     .warning { font-size:12px;color:var(--warning-color,#e7ac55);line-height:1.5; }.empty { padding:24px;line-height:1.6; }
-    @media (prefers-reduced-motion:reduce) { .motion-auto .current { animation:none; } * { transition:none!important; } }
+    .motion-off .track span,.motion-off .mix-bar div { transition:none; }
+    @media (prefers-reduced-motion:reduce) { .motion-auto .track span,.motion-auto .mix-bar div { transition:none; } }
     @media (max-width:360px) { header { padding:18px 16px 0; } section { padding-left:16px;padding-right:16px; }.legend { gap:8px; } }
   `; }
 }
