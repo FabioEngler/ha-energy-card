@@ -48,11 +48,13 @@ test('keeps particle positions across readings and eases into a power increase',
     return {before,after:particles.map(p=>p.getAttribute('transform')),same:particles.every(p=>p.isConnected)};
   });
   expect(result.same).toBe(true);expect(result.after).toEqual(result.before);
-  const first=await snapshot(page);await page.waitForTimeout(250);expect(await snapshot(page)).not.toEqual(first);
+  const first=await snapshot(page);
+  await expect.poll(()=>snapshot(page),{timeout:5000}).not.toEqual(first);
   // Updates remain immediate; only the decorative motion is eased.
   await expect(page.getByRole('button',{name:/Grid:/})).toHaveAttribute('aria-label',/10.00 kW/);
   await page.evaluate(()=>{const w=window as unknown as DemoWindow;(window as unknown as {interval:number}).interval=setInterval(w.update,40)});
-  await page.waitForTimeout(250);expect(await snapshot(page)).not.toEqual(first);
+  const duringUpdates=await snapshot(page);
+  await expect.poll(()=>snapshot(page),{timeout:5000}).not.toEqual(duringUpdates);
   await page.evaluate(()=>clearInterval((window as unknown as {interval:number}).interval));
 });
 

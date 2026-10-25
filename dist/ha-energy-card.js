@@ -313,12 +313,16 @@ const FLOW_GEOMETRY = {
 };
 /** One frame loop per visible card. Lit renders sensor values, never animation frames. */
 class FlowAnimator {
-    constructor(host) {
-        this.host = host;
+    constructor() {
         this.streams = new Map();
         this.connected = false;
         this.visible = true;
         this.junction = 0;
+        this.pageVisibilityChanged = () => {
+            if (!document.hidden)
+                this.visible = this.rootIntersectsViewport();
+            this.runStateChanged();
+        };
         this.runStateChanged = () => {
             this.root?.toggleAttribute('data-motion', this.motionAllowed);
             const hasMotion = [...this.streams.values()].some(s => s.motion.moving);
@@ -375,20 +379,27 @@ class FlowAnimator {
         this.connected = true;
         this.media = window.matchMedia('(prefers-reduced-motion: reduce)');
         this.media.addEventListener('change', this.runStateChanged);
-        document.addEventListener('visibilitychange', this.runStateChanged);
+        document.addEventListener('visibilitychange', this.pageVisibilityChanged);
+        window.addEventListener('pageshow', this.pageVisibilityChanged);
+        window.addEventListener('resize', this.pageVisibilityChanged);
         if (typeof IntersectionObserver !== 'undefined') {
             this.observer = new IntersectionObserver(entries => {
-                this.visible = entries[0]?.isIntersecting ?? true;
+                if (!entries.some(entry => entry.target === this.root))
+                    return;
+                // WebKit can deliver an initial intersection from before SVG layout.
+                // Check its current geometry instead of suspending on that stale result.
+                this.visible = this.rootIntersectsViewport();
                 this.runStateChanged();
             });
-            this.observer.observe(this.host);
         }
     }
     disconnect() {
         this.connected = false;
         this.cancelFrame();
         this.media?.removeEventListener('change', this.runStateChanged);
-        document.removeEventListener('visibilitychange', this.runStateChanged);
+        document.removeEventListener('visibilitychange', this.pageVisibilityChanged);
+        window.removeEventListener('pageshow', this.pageVisibilityChanged);
+        window.removeEventListener('resize', this.pageVisibilityChanged);
         this.observer?.disconnect();
         this.observer = undefined;
         this.streams.clear();
@@ -398,7 +409,15 @@ class FlowAnimator {
         this.junction = 0;
     }
     sync(root, powers, maxPower, mode) {
+        const previousRoot = this.root;
         this.root = root ?? undefined;
+        if (previousRoot !== this.root) {
+            if (previousRoot)
+                this.observer?.unobserve(previousRoot);
+            this.visible = this.rootIntersectsViewport();
+            if (this.root)
+                this.observer?.observe(this.root);
+        }
         this.mode = mode;
         this.glow = root?.querySelector('.junction-glow') ?? undefined;
         this.core = root?.querySelector('.junction') ?? undefined;
@@ -420,6 +439,10 @@ class FlowAnimator {
         this.runStateChanged();
     }
     get motionAllowed() { return this.mode === true || (this.mode !== false && !this.media?.matches); }
+    rootIntersectsViewport() {
+        const rect = this.root?.getBoundingClientRect();
+        return Boolean(rect && rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.right > 0 && rect.top < window.innerHeight && rect.left < window.innerWidth);
+    }
     cancelFrame() {
         if (this.frame !== undefined)
             cancelAnimationFrame(this.frame);
@@ -557,7 +580,7 @@ class EnergyFlowCard extends i$2 {
     constructor() {
         super(...arguments);
         this.balanceGrace = new BalanceGracePeriod();
-        this.flowAnimator = new FlowAnimator(this);
+        this.flowAnimator = new FlowAnimator();
         this.diagramScale = 1;
         this.observedWidth = -1;
     }

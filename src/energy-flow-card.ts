@@ -24,7 +24,7 @@ class EnergyFlowCard extends LitElement {
   private balanceGrace = new BalanceGracePeriod();
   private reading?: ReturnType<BalanceGracePeriod['update']>;
   private balanceTimer?: ReturnType<typeof setTimeout>;
-  private flowAnimator = new FlowAnimator(this);
+  private flowAnimator = new FlowAnimator();
   private diagramScale = 1;
   private diagram?: SVGSVGElement;
   private resizeObserver?: ResizeObserver;

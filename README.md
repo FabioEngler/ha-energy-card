@@ -40,7 +40,7 @@ In YAML, `animation: true` always animates, `animation: false` disables motion, 
 
 **Full animation at (W)** sets the power ceiling for visual intensity, defaulting to **10,000 W per connection**. A logarithmic scale makes low and medium loads distinguishable, then caps at **six particles per connection**, **48 SVG units/second**, and **95% particle opacity**, with a fixed glow size. Above the ceiling, the visuals remain at those limits while actual power readings continue to display normally. Lower the setting for a smaller installation or raise it for larger loads. YAML uses `animation_power_max: 10000`.
 
-Each card uses one animation loop and pauses it when the card is off screen, the browser tab is hidden, motion is disabled, or all streams have stopped. Particle positions survive sensor updates and power-ceiling changes. Consumer rows retain their bars when sorting changes.
+Each card uses one animation loop and pauses it when the diagram is off screen, the browser tab is hidden, motion is disabled, or all streams have stopped. Particle positions survive sensor updates and power-ceiling changes. Consumer rows retain their bars when sorting changes.
 
 ### Publishing releases (repository owner)
 
