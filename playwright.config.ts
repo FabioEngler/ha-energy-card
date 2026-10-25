@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
+  reporter: process.env.CI ? [['list'], ['github']] : 'list',
   projects: [
     { name:'chromium', use:{browserName:'chromium',launchOptions:{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH || undefined}} },
     { name:'iphone-webkit', use:{...devices['iPhone 13'],browserName:'webkit'} },
