@@ -165,3 +165,56 @@ test('preserves balance grace, offline indicators, tap actions, and responsive l
   }
   expect(errors).toEqual([]);
 });
+
+test('keeps icons centered and text readable on narrow iPhone cards and after rotation',async({page})=>{
+  await configure(page,{animation:false});
+  await page.locator('energy-flow-card').evaluate(el=>{el.style.width='calc(100% - 16px)';el.style.margin='8px'});
+  await expect(page.locator('.diagram foreignObject')).toHaveCount(0);
+  for(const width of [320,390,430,844,390]) {
+    await page.setViewportSize({width,height:1000});
+    await expect.poll(async()=>page.locator('energy-flow-card').evaluate(el=>{
+      const root=el.shadowRoot!,diagram=root.querySelector('.diagram') as SVGSVGElement;
+      return Math.abs(Number(el.style.getPropertyValue('--ef-diagram-text-scale') || 1)-Math.max(1,460/diagram.getBoundingClientRect().width));
+    })).toBeLessThan(.002);
+    const geometry=await page.locator('energy-flow-card').evaluate(el=>{
+      const root=el.shadowRoot!,diagram=root.querySelector('.diagram')!.getBoundingClientRect();
+      const nodes=Array.from(root.querySelectorAll('.flow-node')).map(node=>{
+        const circle=node.querySelector('.node')!.getBoundingClientRect();
+        const iconElement=node.querySelector('.node-icon') as SVGSVGElement;
+        const icon=iconElement.getBoundingClientRect();
+        const parentMatrix=(node as SVGGraphicsElement).getScreenCTM()!;
+        const iconSize=iconElement.width.baseVal.value*Math.hypot(parentMatrix.a,parentMatrix.b);
+        const path=node.querySelector('.node-icon path')!.getBoundingClientRect();
+        const fonts=Array.from(node.querySelectorAll<SVGTextElement>('text')).map(text=>{
+          const matrix=text.getScreenCTM()!;
+          const bounds=text.getBoundingClientRect();
+          return {className:text.getAttribute('class'),size:parseFloat(getComputedStyle(text).fontSize)*Math.hypot(matrix.a,matrix.b),top:bounds.top,bottom:bounds.bottom};
+        });
+        return {circle:circle.toJSON(),icon:icon.toJSON(),iconSize,path:path.toJSON(),fonts,centerError:Math.abs(icon.x+icon.width/2-circle.x-circle.width/2)};
+      });
+      return {nodes,diagram:diagram.toJSON(),overflow:document.documentElement.scrollWidth>innerWidth};
+    });
+    expect(geometry.nodes).toHaveLength(4);
+    for(const node of geometry.nodes) {
+      expect(node.centerError).toBeLessThan(1);
+      expect(node.iconSize).toBeGreaterThanOrEqual(23.9);
+      expect(node.path.width).toBeGreaterThan(5);expect(node.path.height).toBeGreaterThan(5);
+      expect(node.icon.top).toBeGreaterThanOrEqual(node.circle.top-1);
+      expect(node.icon.bottom).toBeLessThan(node.circle.bottom);
+      for(const font of node.fonts) {
+        expect(font.size).toBeGreaterThanOrEqual(font.className?.includes('value')?14.9:11.9);
+        expect(font.top).toBeGreaterThanOrEqual(geometry.diagram.top-1);
+        expect(font.bottom).toBeLessThanOrEqual(geometry.diagram.bottom+1);
+      }
+    }
+    expect(geometry.overflow).toBe(false);
+    const bodyFonts=await page.locator('.legend,.hint,.row small').evaluateAll(elements=>elements.map(el=>parseFloat(getComputedStyle(el).fontSize)));
+    expect(bodyFonts.every(size=>size>=12)).toBe(true);
+  }
+  await update(page,{battery:-300,soc:80});
+  await expect(page.locator('[aria-label^="Battery:"] .node-icon')).toHaveAttribute('data-icon','mdi:battery-charging-80');
+  const battery=page.getByRole('button',{name:/Battery:/});
+  if(await page.evaluate(()=>navigator.maxTouchPoints>0)) await battery.tap();
+  else await battery.click();
+  expect(await page.evaluate(()=>(window as unknown as DemoWindow).opened.at(-1))).toBe('battery');
+});

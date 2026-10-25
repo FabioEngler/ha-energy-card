@@ -19,5 +19,5 @@ jobs:
       - run: npm run build
       - name: Verify committed HACS bundle
         run: git diff --exit-code -- dist/ha-energy-card.js
-      - run: npx playwright install --with-deps chromium
+      - run: npx playwright install --with-deps chromium webkit
       - run: npm run test:browser

@@ -1,9 +1,9 @@
 import { FlowMotion, MAX_PARTICLES } from './motion';
 
 export const FLOW_GEOMETRY = {
-  'solar-flow': { x1: 230, y1: 115, x2: 230, y2: 192, hubAtEnd: true },
+  'solar-flow': { x1: 230, y1: 139, x2: 230, y2: 192, hubAtEnd: true },
   'grid-flow': { x1: 113, y1: 192, x2: 230, y2: 192, hubAtEnd: true },
-  'battery-flow': { x1: 230, y1: 269, x2: 230, y2: 192, hubAtEnd: true },
+  'battery-flow': { x1: 230, y1: 245, x2: 230, y2: 192, hubAtEnd: true },
   'home-flow': { x1: 230, y1: 192, x2: 331, y2: 192, hubAtEnd: false },
 } as const;
 export type FlowId = keyof typeof FLOW_GEOMETRY;

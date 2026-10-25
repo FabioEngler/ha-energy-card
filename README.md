@@ -8,6 +8,7 @@ An animated, responsive Home Assistant Lovelace card for **live power**. See sol
 - Automatic home consumption: **solar + grid import + battery discharge − grid export − battery charge**.
 - Separate import/export and charge/discharge sensors, or signed sensors with configurable direction.
 - Larger home total with a segmented ring showing the estimated solar/grid/battery mix.
+- iPhone/Safari-compatible native SVG diagram icons and readable text sizes that stay consistent on narrow cards and after rotation.
 - Battery state of charge and a charge-level icon, glowing green when charging and red when discharging.
 - Consumer list with power, percentage, optional automatic sorting, and untracked “Other consumption”. Designed for 5–10 consumers; no hard limit.
 - Estimated household solar/grid/battery source mix. Sources are allocated proportionally across the home, export, and charging loads. This is an estimate, not measured physical routing or battery provenance.
@@ -133,12 +134,14 @@ npm run build
 Browser regression tests run against the built bundle with lightweight Home Assistant element stand-ins. To install Chromium and run them:
 
 ```sh
-npx playwright install --with-deps chromium
+npx playwright install --with-deps chromium webkit
 npm run test:browser
 ```
 
-If Chromium is already installed, use `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser`. The tests cover continuous motion, reversals, stopping, the visual caps, consumer bar transitions, reduced motion, off-screen pausing, and balance-grace recovery. CI and release workflows run them before publishing.
+The suite runs desktop Chromium and an iPhone profile in WebKit (Safari's browser engine). If only system Chromium is available locally, use `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium npm run test:browser -- --project=chromium`; CI and releases still run both projects. The tests cover continuous motion, reversals, stopping, the visual caps, consumer bar transitions, reduced motion, off-screen pausing, balance-grace recovery, mobile icon positioning, minimum text sizes, and rotation. CI and release workflows run them before publishing.
 
 `npm run dev` rebuilds the bundle on changes; copy the rebuilt bundle to your test Home Assistant instance and refresh the dashboard. No backend service, credentials, or separate runtime is required for the card. Home Assistant supplies entity updates through its `hass` property.
 
 The build produces one self-contained ES module at `dist/ha-energy-card.js`. Commit the rebuilt bundle whenever the card changes; CI checks that the committed bundle matches the source. Tests cover power balance, units, signed sensors, missing readings, source allocation, and consumer sorting. A real Home Assistant installation is still needed to validate integration and entity selection against your sensors.
+
+Diagram icon paths are bundled from Material Design Icons by Pictogrammers. See [third-party notices](licenses/README.md).

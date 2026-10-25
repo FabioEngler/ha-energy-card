@@ -1,3 +1,82 @@
+/*! Material Design Icons — Pictogrammers (https://pictogrammers.com/library/mdi/)
+Pictogrammers Free License
+--------------------------
+
+This icon collection is released as free, open source, and GPL friendly by
+the [Pictogrammers](http://pictogrammers.com/) icon group. You may use it
+for commercial projects, open source projects, or anything really.
+
+# Icons: Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
+Some of the icons are redistributed under the Apache 2.0 license. All other
+icons are either redistributed under their respective licenses or are
+distributed under the Apache 2.0 license.
+
+# Fonts: Apache 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
+All web and desktop fonts are distributed under the Apache 2.0 license. Web
+and desktop fonts contain some icons that are redistributed under the Apache
+2.0 license. All other icons are either redistributed under their respective
+licenses or are distributed under the Apache 2.0 license.
+
+# Code: MIT (https://opensource.org/licenses/MIT)
+The MIT license applies to all non-font and non-icon files.
+
+Apache License
+
+Version 2.0, January 2004
+
+http://www.apache.org/licenses/
+
+TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+1. Definitions.
+
+"License" shall mean the terms and conditions for use, reproduction, and distribution as defined by Sections 1 through 9 of this document.
+
+"Licensor" shall mean the copyright owner or entity authorized by the copyright owner that is granting the License.
+
+"Legal Entity" shall mean the union of the acting entity and all other entities that control, are controlled by, or are under common control with that entity. For the purposes of this definition, "control" means (i) the power, direct or indirect, to cause the direction or management of such entity, whether by contract or otherwise, or (ii) ownership of fifty percent (50%) or more of the outstanding shares, or (iii) beneficial ownership of such entity.
+
+"You" (or "Your") shall mean an individual or Legal Entity exercising permissions granted by this License.
+
+"Source" form shall mean the preferred form for making modifications, including but not limited to software source code, documentation source, and configuration files.
+
+"Object" form shall mean any form resulting from mechanical transformation or translation of a Source form, including but not limited to compiled object code, generated documentation, and conversions to other media types.
+
+"Work" shall mean the work of authorship, whether in Source or Object form, made available under the License, as indicated by a copyright notice that is included in or attached to the work (an example is provided in the Appendix below).
+
+"Derivative Works" shall mean any work, whether in Source or Object form, that is based on (or derived from) the Work and for which the editorial revisions, annotations, elaborations, or other modifications represent, as a whole, an original work of authorship. For the purposes of this License, Derivative Works shall not include works that remain separable from, or merely link (or bind by name) to the interfaces of, the Work and Derivative Works thereof.
+
+"Contribution" shall mean any work of authorship, including the original version of the Work and any modifications or additions to that Work or Derivative Works thereof, that is intentionally submitted to Licensor for inclusion in the Work by the copyright owner or by an individual or Legal Entity authorized to submit on behalf of the copyright owner. For the purposes of this definition, "submitted" means any form of electronic, verbal, or written communication sent to the Licensor or its representatives, including but not limited to communication on electronic mailing lists, source code control systems, and issue tracking systems that are managed by, or on behalf of, the Licensor for the purpose of discussing and improving the Work, but excluding communication that is conspicuously marked or otherwise designated in writing by the copyright owner as "Not a Contribution."
+
+"Contributor" shall mean Licensor and any individual or Legal Entity on behalf of whom a Contribution has been received by Licensor and subsequently incorporated within the Work.
+
+2. Grant of Copyright License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable copyright license to reproduce, prepare Derivative Works of, publicly display, publicly perform, sublicense, and distribute the Work and such Derivative Works in Source or Object form.
+
+3. Grant of Patent License. Subject to the terms and conditions of this License, each Contributor hereby grants to You a perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable (except as stated in this section) patent license to make, have made, use, offer to sell, sell, import, and otherwise transfer the Work, where such license applies only to those patent claims licensable by such Contributor that are necessarily infringed by their Contribution(s) alone or by combination of their Contribution(s) with the Work to which such Contribution(s) was submitted. If You institute patent litigation against any entity (including a cross-claim or counterclaim in a lawsuit) alleging that the Work or a Contribution incorporated within the Work constitutes direct or contributory patent infringement, then any patent licenses granted to You under this License for that Work shall terminate as of the date such litigation is filed.
+
+4. Redistribution. You may reproduce and distribute copies of the Work or Derivative Works thereof in any medium, with or without modifications, and in Source or Object form, provided that You meet the following conditions:
+
+You must give any other recipients of the Work or Derivative Works a copy of this License; and
+
+You must cause any modified files to carry prominent notices stating that You changed the files; and
+
+You must retain, in the Source form of any Derivative Works that You distribute, all copyright, patent, trademark, and attribution notices from the Source form of the Work, excluding those notices that do not pertain to any part of the Derivative Works; and
+
+If the Work includes a "NOTICE" text file as part of its distribution, then any Derivative Works that You distribute must include a readable copy of the attribution notices contained within such NOTICE file, excluding those notices that do not pertain to any part of the Derivative Works, in at least one of the following places: within a NOTICE text file distributed as part of the Derivative Works; within the Source form or documentation, if provided along with the Derivative Works; or, within a display generated by the Derivative Works, if and wherever such third-party notices normally appear. The contents of the NOTICE file are for informational purposes only and do not modify the License. You may add Your own attribution notices within Derivative Works that You distribute, alongside or as an addendum to the NOTICE text from the Work, provided that such additional attribution notices cannot be construed as modifying the License. You may add Your own copyright statement to Your modifications and may provide additional or different license terms and conditions for use, reproduction, or distribution of Your modifications, or for any such Derivative Works as a whole, provided Your use, reproduction, and distribution of the Work otherwise complies with the conditions stated in this License.
+
+5. Submission of Contributions. Unless You explicitly state otherwise, any Contribution intentionally submitted for inclusion in the Work by You to the Licensor shall be under the terms and conditions of this License, without any additional terms or conditions. Notwithstanding the above, nothing herein shall supersede or modify the terms of any separate license agreement you may have executed with Licensor regarding such Contributions.
+
+6. Trademarks. This License does not grant permission to use the trade names, trademarks, service marks, or product names of the Licensor, except as required for reasonable and customary use in describing the origin of the Work and reproducing the content of the NOTICE file.
+
+7. Disclaimer of Warranty. Unless required by applicable law or agreed to in writing, Licensor provides the Work (and each Contributor provides its Contributions) on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied, including, without limitation, any warranties or conditions of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A PARTICULAR PURPOSE. You are solely responsible for determining the appropriateness of using or redistributing the Work and assume any risks associated with Your exercise of permissions under this License.
+
+8. Limitation of Liability. In no event and under no legal theory, whether in tort (including negligence), contract, or otherwise, unless required by applicable law (such as deliberate and grossly negligent acts) or agreed to in writing, shall any Contributor be liable to You for damages, including any direct, indirect, special, incidental, or consequential damages of any character arising as a result of this License or out of the use or inability to use the Work (including but not limited to damages for loss of goodwill, work stoppage, computer failure or malfunction, or any and all other commercial damages or losses), even if such Contributor has been advised of the possibility of such damages.
+
+9. Accepting Warranty or Additional Liability. While redistributing the Work or Derivative Works thereof, You may choose to offer, and charge a fee for, acceptance of support, warranty, indemnity, or other liability obligations and/or rights consistent with this License. However, in accepting such obligations, You may act only on Your own behalf and on Your sole responsibility, not on behalf of any other Contributor, and only if You agree to indemnify, defend, and hold each Contributor harmless for any liability incurred by, or claims asserted against, such Contributor by reason of your accepting any such warranty or additional liability.
+
+END OF TERMS AND CONDITIONS
+
+*/
 /**
  * @license
  * Copyright 2019 Google LLC
@@ -227,9 +306,9 @@ class FlowMotion {
 }
 
 const FLOW_GEOMETRY = {
-    'solar-flow': { x1: 230, y1: 115, x2: 230, y2: 192, hubAtEnd: true },
+    'solar-flow': { x1: 230, y1: 139, x2: 230, y2: 192, hubAtEnd: true },
     'grid-flow': { x1: 113, y1: 192, x2: 230, y2: 192, hubAtEnd: true },
-    'battery-flow': { x1: 230, y1: 269, x2: 230, y2: 192, hubAtEnd: true },
+    'battery-flow': { x1: 230, y1: 245, x2: 230, y2: 192, hubAtEnd: true },
     'home-flow': { x1: 230, y1: 192, x2: 331, y2: 192, hubAtEnd: false },
 };
 /** One frame loop per visible card. Lit renders sensor values, never animation frames. */
@@ -348,6 +427,58 @@ class FlowAnimator {
     }
 }
 
+// Material Design Icons v7.4.47
+var mdiBattery = "M16.67,4H15V2H9V4H7.33A1.33,1.33 0 0,0 6,5.33V20.67C6,21.4 6.6,22 7.33,22H16.67A1.33,1.33 0 0,0 18,20.67V5.33C18,4.6 17.4,4 16.67,4Z";
+var mdiBattery10 = "M16,18H8V6H16M16.67,4H15V2H9V4H7.33A1.33,1.33 0 0,0 6,5.33V20.67C6,21.4 6.6,22 7.33,22H16.67A1.33,1.33 0 0,0 18,20.67V5.33C18,4.6 17.4,4 16.67,4Z";
+var mdiBattery20 = "M16,17H8V6H16M16.67,4H15V2H9V4H7.33A1.33,1.33 0 0,0 6,5.33V20.67C6,21.4 6.6,22 7.33,22H16.67A1.33,1.33 0 0,0 18,20.67V5.33C18,4.6 17.4,4 16.67,4Z";
+var mdiBattery30 = "M16,15H8V6H16M16.67,4H15V2H9V4H7.33A1.33,1.33 0 0,0 6,5.33V20.67C6,21.4 6.6,22 7.33,22H16.67A1.33,1.33 0 0,0 18,20.67V5.33C18,4.6 17.4,4 16.67,4Z";
+var mdiBattery40 = "M16,14H8V6H16M16.67,4H15V2H9V4H7.33A1.33,1.33 0 0,0 6,5.33V20.67C6,21.4 6.6,22 7.33,22H16.67A1.33,1.33 0 0,0 18,20.67V5.33C18,4.6 17.4,4 16.67,4Z";
+var mdiBattery50 = "M16,13H8V6H16M16.67,4H15V2H9V4H7.33A1.33,1.33 0 0,0 6,5.33V20.67C6,21.4 6.6,22 7.33,22H16.67A1.33,1.33 0 0,0 18,20.67V5.33C18,4.6 17.4,4 16.67,4Z";
+var mdiBattery60 = "M16,12H8V6H16M16.67,4H15V2H9V4H7.33A1.33,1.33 0 0,0 6,5.33V20.67C6,21.4 6.6,22 7.33,22H16.67A1.33,1.33 0 0,0 18,20.67V5.33C18,4.6 17.4,4 16.67,4Z";
+var mdiBattery70 = "M16,10H8V6H16M16.67,4H15V2H9V4H7.33A1.33,1.33 0 0,0 6,5.33V20.67C6,21.4 6.6,22 7.33,22H16.67A1.33,1.33 0 0,0 18,20.67V5.33C18,4.6 17.4,4 16.67,4Z";
+var mdiBattery80 = "M16,9H8V6H16M16.67,4H15V2H9V4H7.33A1.33,1.33 0 0,0 6,5.33V20.67C6,21.4 6.6,22 7.33,22H16.67A1.33,1.33 0 0,0 18,20.67V5.33C18,4.6 17.4,4 16.67,4Z";
+var mdiBattery90 = "M16,8H8V6H16M16.67,4H15V2H9V4H7.33A1.33,1.33 0 0,0 6,5.33V20.67C6,21.4 6.6,22 7.33,22H16.67A1.33,1.33 0 0,0 18,20.67V5.33C18,4.6 17.4,4 16.67,4Z";
+var mdiBatteryCharging10 = "M23.05,11H20.05V4L15.05,14H18.05V22M12,18H4L4.05,6H12.05M12.72,4H11.05V2H5.05V4H3.38A1.33,1.33 0 0,0 2.05,5.33V20.67C2.05,21.4 2.65,22 3.38,22H12.72C13.45,22 14.05,21.4 14.05,20.67V5.33A1.33,1.33 0 0,0 12.72,4Z";
+var mdiBatteryCharging100 = "M23,11H20V4L15,14H18V22M12.67,4H11V2H5V4H3.33A1.33,1.33 0 0,0 2,5.33V20.67C2,21.4 2.6,22 3.33,22H12.67C13.4,22 14,21.4 14,20.67V5.33A1.33,1.33 0 0,0 12.67,4Z";
+var mdiBatteryCharging20 = "M23.05,11H20.05V4L15.05,14H18.05V22M12.05,17H4.05V6H12.05M12.72,4H11.05V2H5.05V4H3.38A1.33,1.33 0 0,0 2.05,5.33V20.67C2.05,21.4 2.65,22 3.38,22H12.72C13.45,22 14.05,21.4 14.05,20.67V5.33A1.33,1.33 0 0,0 12.72,4Z";
+var mdiBatteryCharging30 = "M12,15H4V6H12M12.67,4H11V2H5V4H3.33A1.33,1.33 0 0,0 2,5.33V20.67C2,21.4 2.6,22 3.33,22H12.67C13.4,22 14,21.4 14,20.67V5.33A1.33,1.33 0 0,0 12.67,4M23,11H20V4L15,14H18V22L23,11Z";
+var mdiBatteryCharging40 = "M13 4H11V2H5V4H3C2.4 4 2 4.4 2 5V21C2 21.6 2.4 22 3 22H13C13.6 22 14 21.6 14 21V5C14 4.4 13.6 4 13 4M12 14.5H4V6H12V14.5M23 11H20V4L15 14H18V22";
+var mdiBatteryCharging50 = "M23,11H20V4L15,14H18V22M12,13H4V6H12M12.67,4H11V2H5V4H3.33A1.33,1.33 0 0,0 2,5.33V20.67C2,21.4 2.6,22 3.33,22H12.67C13.4,22 14,21.4 14,20.67V5.33A1.33,1.33 0 0,0 12.67,4Z";
+var mdiBatteryCharging60 = "M12,11H4V6H12M12.67,4H11V2H5V4H3.33A1.33,1.33 0 0,0 2,5.33V20.67C2,21.4 2.6,22 3.33,22H12.67C13.4,22 14,21.4 14,20.67V5.33A1.33,1.33 0 0,0 12.67,4M23,11H20V4L15,14H18V22L23,11Z";
+var mdiBatteryCharging70 = "M12,10H4V6H12M12.67,4H11V2H5V4H3.33A1.33,1.33 0 0,0 2,5.33V20.67C2,21.4 2.6,22 3.33,22H12.67C13.4,22 14,21.4 14,20.67V5.33A1.33,1.33 0 0,0 12.67,4M23,11H20V4L15,14H18V22L23,11Z";
+var mdiBatteryCharging80 = "M23,11H20V4L15,14H18V22M12,9H4V6H12M12.67,4H11V2H5V4H3.33A1.33,1.33 0 0,0 2,5.33V20.67C2,21.4 2.6,22 3.33,22H12.67C13.4,22 14,21.4 14,20.67V5.33A1.33,1.33 0 0,0 12.67,4Z";
+var mdiBatteryCharging90 = "M23,11H20V4L15,14H18V22M12,8H4V6H12M12.67,4H11V2H5V4H3.33A1.33,1.33 0 0,0 2,5.33V20.67C2,21.4 2.6,22 3.33,22H12.67C13.4,22 14,21.4 14,20.67V5.33A1.33,1.33 0 0,0 12.67,4Z";
+var mdiBatteryChargingOutline = "M23.05,11H20.05V4L15.05,14H18.05V22M12,20H4L4.05,6H12.05M12.72,4H11.05V2H5.05V4H3.38A1.33,1.33 0 0,0 2.05,5.33V20.67C2.05,21.4 2.65,22 3.38,22H12.72C13.45,22 14.05,21.4 14.05,20.67V5.33A1.33,1.33 0 0,0 12.72,4Z";
+var mdiBatteryOutline = "M16,20H8V6H16M16.67,4H15V2H9V4H7.33A1.33,1.33 0 0,0 6,5.33V20.67C6,21.4 6.6,22 7.33,22H16.67A1.33,1.33 0 0,0 18,20.67V5.33C18,4.6 17.4,4 16.67,4Z";
+var mdiBatteryUnknown = "M15.07,12.25L14.17,13.17C13.63,13.71 13.25,14.18 13.09,15H11.05C11.16,14.1 11.56,13.28 12.17,12.67L13.41,11.41C13.78,11.05 14,10.55 14,10C14,8.89 13.1,8 12,8A2,2 0 0,0 10,10H8A4,4 0 0,1 12,6A4,4 0 0,1 16,10C16,10.88 15.64,11.68 15.07,12.25M13,19H11V17H13M16.67,4H15V2H9V4H7.33A1.33,1.33 0 0,0 6,5.33V20.66C6,21.4 6.6,22 7.33,22H16.67C17.4,22 18,21.4 18,20.66V5.33C18,4.59 17.4,4 16.67,4Z";
+var mdiHelpCircleOutline = "M11,18H13V16H11V18M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,6A4,4 0 0,0 8,10H10A2,2 0 0,1 12,8A2,2 0 0,1 14,10C14,12 11,11.75 11,15H13C13,12.75 16,12.5 16,10A4,4 0 0,0 12,6Z";
+var mdiHomeLightningBoltOutline = "M5 20V12H2L12 3L22 12H19V20H5M12 5.69L7 10.19V18H17V10.19L12 5.69M11.5 18V14H9L12.5 7V11H15L11.5 18Z";
+var mdiSolarPowerVariant = "M3.33 16H11V13H4L3.33 16M13 16H20.67L20 13H13V16M21.11 18H13V22H22L21.11 18M2 22H11V18H2.89L2 22M11 8H13V11H11V8M15.76 7.21L17.18 5.79L19.3 7.91L17.89 9.33L15.76 7.21M4.71 7.91L6.83 5.79L8.24 7.21L6.12 9.33L4.71 7.91M3 2H6V4H3V2M18 2H21V4H18V2M12 7C14.76 7 17 4.76 17 2H7C7 4.76 9.24 7 12 7Z";
+var mdiTransmissionTower = "M8.28,5.45L6.5,4.55L7.76,2H16.23L17.5,4.55L15.72,5.44L15,4H9L8.28,5.45M18.62,8H14.09L13.3,5H10.7L9.91,8H5.38L4.1,10.55L5.89,11.44L6.62,10H17.38L18.1,11.45L19.89,10.56L18.62,8M17.77,22H15.7L15.46,21.1L12,15.9L8.53,21.1L8.3,22H6.23L9.12,11H11.19L10.83,12.35L12,14.1L13.16,12.35L12.81,11H14.88L17.77,22M11.4,15L10.5,13.65L9.32,18.13L11.4,15M14.68,18.12L13.5,13.64L12.6,15L14.68,18.12Z";
+
+// Diagram icons are native SVG paths. HTML/shadow DOM inside foreignObject
+// can be painted at the wrong origin by iOS WebKit.
+const paths = {
+    'mdi:solar-power-variant': mdiSolarPowerVariant,
+    'mdi:transmission-tower': mdiTransmissionTower,
+    'mdi:home-lightning-bolt-outline': mdiHomeLightningBoltOutline,
+    'mdi:battery': mdiBattery,
+    'mdi:battery-outline': mdiBatteryOutline,
+    'mdi:battery-unknown': mdiBatteryUnknown,
+    'mdi:battery-10': mdiBattery10, 'mdi:battery-20': mdiBattery20,
+    'mdi:battery-30': mdiBattery30, 'mdi:battery-40': mdiBattery40,
+    'mdi:battery-50': mdiBattery50, 'mdi:battery-60': mdiBattery60,
+    'mdi:battery-70': mdiBattery70, 'mdi:battery-80': mdiBattery80,
+    'mdi:battery-90': mdiBattery90,
+    'mdi:battery-charging-outline': mdiBatteryChargingOutline,
+    'mdi:battery-charging-10': mdiBatteryCharging10, 'mdi:battery-charging-20': mdiBatteryCharging20,
+    'mdi:battery-charging-30': mdiBatteryCharging30, 'mdi:battery-charging-40': mdiBatteryCharging40,
+    'mdi:battery-charging-50': mdiBatteryCharging50, 'mdi:battery-charging-60': mdiBatteryCharging60,
+    'mdi:battery-charging-70': mdiBatteryCharging70, 'mdi:battery-charging-80': mdiBatteryCharging80,
+    'mdi:battery-charging-90': mdiBatteryCharging90, 'mdi:battery-charging-100': mdiBatteryCharging100,
+};
+function nodeIconPath(icon) { return paths[icon] ?? mdiHelpCircleOutline; }
+
 class EnergyFlowEditor extends i$2 {
     static { this.properties = { hass: { attribute: false }, config: { state: true } }; }
     setConfig(config) { this.config = { ...config }; }
@@ -427,8 +558,21 @@ class EnergyFlowCard extends i$2 {
         super(...arguments);
         this.balanceGrace = new BalanceGracePeriod();
         this.flowAnimator = new FlowAnimator(this);
+        this.diagramScale = 1;
+        this.observedWidth = -1;
     }
-    static { this.properties = { hass: { attribute: false }, config: { state: true } }; }
+    static { this.properties = { hass: { attribute: false }, config: { state: true }, diagramScale: { state: true } }; }
+    updateDiagramScale() {
+        const width = this.diagram?.getBoundingClientRect().width;
+        if (!width)
+            return;
+        // SVG scales with the card, but text and icons keep readable CSS sizes.
+        const scale = Math.max(1, 460 / width);
+        if (Math.abs(scale - this.diagramScale) > .001) {
+            this.style.setProperty('--ef-diagram-text-scale', String(scale));
+            this.diagramScale = scale;
+        }
+    }
     clearBalanceTimer() {
         if (this.balanceTimer !== undefined)
             clearTimeout(this.balanceTimer);
@@ -438,6 +582,16 @@ class EnergyFlowCard extends i$2 {
         this.balanceGrace.reset();
         super.connectedCallback();
         this.flowAnimator.connect();
+        if (typeof ResizeObserver !== 'undefined') {
+            this.resizeObserver = new ResizeObserver(entries => {
+                const width = entries[0]?.contentRect.width;
+                if (width !== undefined && Math.abs(width - this.observedWidth) > .1) {
+                    this.observedWidth = width;
+                    this.updateDiagramScale();
+                }
+            });
+            this.resizeObserver.observe(this);
+        }
         this.requestUpdate();
     }
     disconnectedCallback() {
@@ -445,6 +599,10 @@ class EnergyFlowCard extends i$2 {
         this.clearBalanceTimer();
         this.balanceGrace.reset();
         this.flowAnimator.disconnect();
+        this.resizeObserver?.disconnect();
+        this.resizeObserver = undefined;
+        this.diagram = undefined;
+        this.observedWidth = -1;
     }
     willUpdate() {
         this.clearBalanceTimer();
@@ -462,7 +620,12 @@ class EnergyFlowCard extends i$2 {
         const m = this.reading;
         if (!m)
             return;
-        this.flowAnimator.sync(this.renderRoot.querySelector('.diagram'), {
+        const diagram = this.renderRoot.querySelector('.diagram');
+        if (diagram !== (this.diagram ?? null)) {
+            this.diagram = diagram ?? undefined;
+            this.updateDiagramScale();
+        }
+        this.flowAnimator.sync(diagram, {
             'solar-flow': m.solar,
             'grid-flow': m.grid ? m.grid.incoming - m.grid.outgoing : null,
             'battery-flow': m.battery ? m.battery.incoming - m.battery.outgoing : null,
@@ -501,20 +664,23 @@ class EnergyFlowCard extends i$2 {
         if (entity)
             this.dispatchEvent(new CustomEvent('hass-more-info', { detail: { entityId: entity }, bubbles: true, composed: true }));
     }
-    homeRing(sources, home) {
+    homeRing(sources, home, radius) {
         let offset = 0;
-        return w `<circle r="59" class="home-ring-track"/>
+        return w `<circle r=${radius} class="home-ring-track"/>
       ${sources.map(source => {
             const share = home && home > 0 ? source.power / home * 100 : 0;
             const start = offset;
             offset += share;
-            return share > 0 ? w `<circle r="59" pathLength="100" class="home-ring-segment" stroke=${source.color}
+            return share > 0 ? w `<circle r=${radius} pathLength="100" class="home-ring-segment" stroke=${source.color}
           stroke-dasharray=${`${share} ${100 - share}`} stroke-dashoffset=${-start} transform="rotate(-90)">
           <title>${source.name}: ${formatPower(source.power)} (estimated)</title>
         </circle>` : A;
         })}`;
     }
     node(x, y, icon, label, value, color, sub, labelAbove = false, options = {}) {
+        const radius = Math.max(options.home ? 52 : 43, (options.home ? 40 : 36) * this.diagramScale);
+        const iconSize = 24 * this.diagramScale;
+        const labelY = labelAbove ? -(radius + 12 * this.diagramScale) : Math.max(options.home ? 77 : 62, radius + 17 * this.diagramScale);
         return w `<g transform=${`translate(${x},${y})`} class=${`flow-node ${options.home ? 'home-node' : ''} ${options.batteryStatus ? `battery-${options.batteryStatus}` : ''} ${options.entity ? 'interactive' : ''}`}
       role=${options.entity ? 'button' : A} tabindex=${options.entity ? '0' : A}
       aria-label=${`${label}: ${value}${sub ? `, ${sub}` : ''}${options.statusLabel ? `, ${options.statusLabel}` : ''}${options.entity ? '. Open entity details' : ''}`}
@@ -524,13 +690,14 @@ class EnergyFlowCard extends i$2 {
                 this.moreInfo(options.entity);
             }
         }}>
-      <circle r=${options.home ? 52 : 43} class="node" stroke=${color}/>
-      ${options.home ? this.homeRing(options.ring ?? [], options.homePower ?? null) : A}
-      <foreignObject x="-12" y=${options.home ? -34 : -28} width="24" height="24"><ha-icon class="node-icon" .icon=${icon}></ha-icon></foreignObject>
-      <text y="12" class=${`value ${value === 'Unavailable' ? 'unavailable-value' : ''}`}>${value}</text>
-      ${sub ? w `<text y="28" class="sub">${sub}</text>` : A}
-      <text y=${labelAbove ? -56 : options.home ? 77 : 62} class="label">${label}</text>
-      ${options.statusLabel ? w `<text y="78" class="battery-status-label">${options.statusLabel}</text>` : A}
+      <circle r=${radius} class="node" stroke=${color}/>
+      ${options.home ? this.homeRing(options.ring ?? [], options.homePower ?? null, radius + 7) : A}
+      <svg class="node-icon" data-icon=${icon} x=${-iconSize / 2} y=${(options.home ? -34 : -28) * this.diagramScale}
+        width=${iconSize} height=${iconSize} viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d=${nodeIconPath(icon)}/></svg>
+      <text y=${10 * this.diagramScale} class=${`value ${value === 'Unavailable' ? 'unavailable-value' : ''}`}>${value}</text>
+      ${sub ? w `<text y=${26 * this.diagramScale} class="sub">${sub}</text>` : A}
+      <text y=${labelY} class="label">${label}</text>
+      ${options.statusLabel ? w `<text y=${labelY + 17 * this.diagramScale} class="battery-status-label">${options.statusLabel}</text>` : A}
     </g>`;
     }
     render() {
@@ -550,7 +717,7 @@ class EnergyFlowCard extends i$2 {
         const batteryEntity = c$1.battery?.entity || (batteryNet !== null && batteryNet < -1 ? c$1.battery?.export_entity || c$1.battery?.import_entity : c$1.battery?.import_entity || c$1.battery?.export_entity) || c$1.battery_soc_entity;
         return b `<ha-card class=${`motion-${c$1.animation === true ? 'on' : c$1.animation === false ? 'off' : 'auto'}`}>
       <header><div><span class="eyebrow">POWER FLOW</span><h2>${c$1.title || 'Live energy'}</h2></div><span class=${`live ${m.updating ? 'updating' : ''}`}><i></i>${m.updating ? 'Updating' : 'Live'}</span></header>
-      <svg class=${`diagram motion-${c$1.animation === true ? 'on' : c$1.animation === false ? 'off' : 'auto'}`} viewBox="0 0 460 400" role="group" aria-label="Live power flow: solar, grid, battery, and home meet at a shared junction">
+      <svg class=${`diagram motion-${c$1.animation === true ? 'on' : c$1.animation === false ? 'off' : 'auto'}`} viewBox="0 0 460 416" role="group" aria-label="Live power flow: solar, grid, battery, and home meet at a shared junction">
         <defs><radialGradient id="junction-halo"><stop offset="0" stop-color="currentColor" stop-opacity=".8"/><stop offset=".35" stop-color="currentColor" stop-opacity=".25"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></radialGradient></defs>
         ${this.connection('solar-flow', m.solar, 'var(--ef-solar)')}
         ${this.connection('grid-flow', gridNet, 'var(--ef-grid)')}
@@ -558,10 +725,10 @@ class EnergyFlowCard extends i$2 {
         ${this.connection('home-flow', m.home, 'var(--ef-home)')}
         <circle cx="230" cy="192" r="13" class="junction-glow" fill="url(#junction-halo)" opacity="0" aria-hidden="true"/>
         <circle cx="230" cy="192" r="3.5" class="junction"/>
-        ${this.node(230, 72, 'mdi:solar-power-variant', 'Solar', formatPower(m.solar), 'var(--ef-solar)', 'Production', true, { entity: c$1.solar_entity })}
+        ${this.node(230, 96, 'mdi:solar-power-variant', 'Solar', formatPower(m.solar), 'var(--ef-solar)', 'Production', true, { entity: c$1.solar_entity })}
         ${this.node(70, 192, 'mdi:transmission-tower', 'Grid', formatPower(gridNet === null ? null : Math.abs(gridNet)), 'var(--ef-grid)', gridNet === null ? 'Unavailable' : gridNet < 0 ? 'Exporting' : gridNet > 0 ? 'Importing' : 'Idle', false, { entity: gridEntity })}
         ${this.node(390, 192, 'mdi:home-lightning-bolt-outline', 'Home', formatPower(m.home), 'var(--ef-home)', m.updating ? 'Updating' : 'Calculated', false, { home: true, ring: m.sources, homePower: m.home })}
-        ${batteryPresent ? this.node(230, 312, battery.icon, 'Battery', formatPower(batteryNet === null ? null : Math.abs(batteryNet)), 'var(--ef-battery)', soc !== null ? `${Math.round(soc)}%` : c$1.battery_soc_entity ? 'SoC —' : undefined, false, { entity: batteryEntity, batteryStatus: battery.status, statusLabel: battery.label }) : A}
+        ${batteryPresent ? this.node(230, 288, battery.icon, 'Battery', formatPower(batteryNet === null ? null : Math.abs(batteryNet)), 'var(--ef-battery)', soc !== null ? `${Math.round(soc)}%` : c$1.battery_soc_entity ? 'SoC —' : undefined, false, { entity: batteryEntity, batteryStatus: battery.status, statusLabel: battery.label }) : A}
       </svg>
       <section class="mix" aria-label="Estimated household power sources">
         <div class="section-title">Home power sources <span>${m.updating ? 'Updating' : 'Estimated mix'}</span></div>
@@ -590,38 +757,38 @@ class EnergyFlowCard extends i$2 {
             : b `<div class="consumer">${contents}</div>`;
     }
     static { this.styles = i$5 `
-    :host { --ef-solar:#f6bd4f;--ef-grid:#a99af7;--ef-battery:#53d4bd;--ef-home:#68b7ff;display:block; }
+    :host { --ef-solar:#f6bd4f;--ef-grid:#a99af7;--ef-battery:#53d4bd;--ef-home:#68b7ff;display:block;-webkit-text-size-adjust:100%;text-size-adjust:100%; }
     ha-card { overflow:hidden;background:var(--ha-card-background,var(--card-background-color,#191c24));color:var(--primary-text-color,#eee);border-radius:24px; }
     header { display:flex;align-items:center;justify-content:space-between;padding:24px 24px 0; }
-    .eyebrow { font-size:10px;letter-spacing:2px;color:var(--secondary-text-color); } h2 { margin:5px 0;font-size:22px;font-weight:600; }
+    .eyebrow { font-size:11px;letter-spacing:2px;color:var(--secondary-text-color); } h2 { margin:5px 0;font-size:22px;font-weight:600; }
     .live { font-size:12px;color:var(--secondary-text-color);display:flex;gap:7px;align-items:center; }.live i { width:6px;height:6px;background:var(--ef-battery);border-radius:50%; }
     .live.updating i { background:var(--warning-color,#e7ac55); }
     .diagram { width:100%;display:block;overflow:visible;margin:8px auto 20px;max-width:540px; }
     .node { fill:var(--ha-card-background,var(--card-background-color,#191c24));stroke-width:2; }
-    .home-node .value { font-size:20px;font-weight:750; }.home-node .unavailable-value { font-size:13px; }.home-node .node { stroke-width:1.5; }
+    .home-node .value { font-size:calc(20px * var(--ef-diagram-text-scale,1));font-weight:750; }.home-node .value.unavailable-value { font-size:calc(13px * var(--ef-diagram-text-scale,1)); }.home-node .node { stroke-width:1.5; }
     .home-ring-track,.home-ring-segment { fill:none;stroke-width:4; }.home-ring-track { stroke:var(--divider-color,#444); }
     .battery-charging { --battery-state-color:#4ade80; }.battery-discharging { --battery-state-color:#fb7185; }
     .battery-charging .node,.battery-discharging .node { stroke:var(--battery-state-color);filter:drop-shadow(0 0 6px var(--battery-state-color)); }
     .battery-charging .node-icon,.battery-discharging .node-icon { color:var(--battery-state-color); }
-    .battery-status-label { font-size:10px;fill:var(--battery-state-color,var(--secondary-text-color,#aaa)); }
+    .battery-status-label { font-size:calc(12px * var(--ef-diagram-text-scale,1));fill:var(--battery-state-color,var(--secondary-text-color,#aaa)); }
     .interactive { cursor:pointer; }.flow-node:focus-visible { outline:none; }.flow-node:focus-visible .node { stroke-width:4;stroke:var(--primary-color,#68b7ff); }
-    text { fill:var(--primary-text-color,#eee);text-anchor:middle;font-family:inherit; }.value { font-size:13px;font-weight:600;font-variant-numeric:tabular-nums; }.sub { font-size:9px;fill:var(--secondary-text-color,#aaa); }.label { font-size:12px;fill:var(--secondary-text-color,#aaa); }
-    foreignObject { color:var(--primary-text-color,#eee); }.node-icon { display:flex;align-items:center;justify-content:center;width:24px;height:24px;--mdc-icon-size:24px; }
+    text { fill:var(--primary-text-color,#eee);text-anchor:middle;font-family:inherit; }.value { font-size:calc(15px * var(--ef-diagram-text-scale,1));font-weight:600;font-variant-numeric:tabular-nums; }.value.unavailable-value { font-size:calc(12px * var(--ef-diagram-text-scale,1)); }.sub { font-size:calc(12px * var(--ef-diagram-text-scale,1));fill:var(--secondary-text-color,#aaa); }.label { font-size:calc(13px * var(--ef-diagram-text-scale,1));fill:var(--secondary-text-color,#aaa); }
+    .node-icon { fill:currentColor;pointer-events:none; }
     .energy-flow { pointer-events:none; }.wire { fill:none;stroke:currentColor;stroke-width:1.5;opacity:.23; }
     .flow-static { fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round; }
     .flow-particles { display:none;fill:currentColor;filter:drop-shadow(0 0 1.5px currentColor); }
     .diagram[data-motion] .flow-particles { display:block; }.diagram[data-motion] .flow-static { display:none; }
     .junction { fill:var(--primary-text-color,#eee); }.junction-glow { pointer-events:none; }
-    section { padding:0 24px 20px; }.section-title { display:flex;justify-content:space-between;gap:8px;font-size:13px;font-weight:600;margin-bottom:14px; }.section-title span { font-size:11px;font-weight:400;color:var(--secondary-text-color); }
+    section { padding:0 24px 20px; }.section-title { display:flex;justify-content:space-between;gap:8px;font-size:14px;font-weight:600;margin-bottom:14px; }.section-title span { font-size:12px;font-weight:400;color:var(--secondary-text-color); }
     .mix-bar { height:8px;display:flex;overflow:hidden;border-radius:8px;background:var(--divider-color,#333); }.mix-bar div { transition:width .5s; }
-    .legend { display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;font-size:11px; }.legend span { display:flex;align-items:center;gap:5px; }.legend i { width:6px;height:6px;border-radius:50%; }.legend b { font-weight:500; }
-    .hint { font-size:10px;color:var(--secondary-text-color);margin:9px 0 0; }.consumers { border-top:1px solid var(--divider-color,#333);padding-top:20px; }
+    .legend { display:flex;flex-wrap:wrap;gap:12px;margin-top:12px;font-size:13px; }.legend span { display:flex;align-items:center;gap:5px; }.legend i { width:6px;height:6px;border-radius:50%; }.legend b { font-weight:500; }
+    .hint { font-size:12px;color:var(--secondary-text-color);margin:10px 0 0;line-height:1.5; }.consumers { border-top:1px solid var(--divider-color,#333);padding-top:20px; }
     .consumer { box-sizing:border-box;width:100%;display:flex;gap:12px;align-items:center;margin:6px 0;padding:10px 0;min-height:54px;border:0;background:transparent;color:inherit;font:inherit;text-align:left; }
     button.consumer { border-radius:10px; }button.consumer:hover { background:var(--secondary-background-color,rgba(127,127,127,.08)); }button.consumer:focus-visible { outline:2px solid var(--primary-color,#68b7ff);outline-offset:4px; }
     .consumer-icon { display:flex;align-items:center;justify-content:center;flex:0 0 30px;height:30px;border-radius:9px;background:var(--secondary-background-color,rgba(127,127,127,.08));color:var(--secondary-text-color);--mdc-icon-size:21px; }
-    .device { flex:1;min-width:0; }.row { display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:13px; }.device-name { display:flex;align-items:center;gap:7px;flex-wrap:wrap;overflow-wrap:anywhere;min-width:0; }
-    .row strong { white-space:nowrap;font-size:15px;font-weight:650;font-variant-numeric:tabular-nums; }.row small { width:35px;text-align:right;color:var(--secondary-text-color);font-size:11px;font-variant-numeric:tabular-nums; }
-    .offline-badge { border:1px solid var(--divider-color,#555);border-radius:5px;padding:2px 5px;font-size:9px;line-height:1.2;color:var(--secondary-text-color);font-weight:400; }
+    .device { flex:1;min-width:0; }.row { display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px; }.device-name { display:flex;align-items:center;gap:7px;flex-wrap:wrap;overflow-wrap:anywhere;min-width:0; }
+    .row strong { white-space:nowrap;font-size:16px;font-weight:650;font-variant-numeric:tabular-nums; }.row small { width:35px;text-align:right;color:var(--secondary-text-color);font-size:12px;font-variant-numeric:tabular-nums; }
+    .offline-badge { border:1px solid var(--divider-color,#555);border-radius:5px;padding:2px 5px;font-size:12px;line-height:1.2;color:var(--secondary-text-color);font-weight:400; }
     .track { flex:1;height:4px;border-radius:4px;background:var(--divider-color,#333);margin-top:6px;overflow:hidden; }.track span { display:block;width:100%;height:100%;background:var(--ef-home);border-radius:4px;transform-origin:left center;transition:transform .4s cubic-bezier(.22,.61,.36,1); }
     .warning { font-size:12px;color:var(--warning-color,#e7ac55);line-height:1.5; }.empty { padding:24px;line-height:1.6; }
     .motion-off .track span,.motion-off .mix-bar div { transition:none; }

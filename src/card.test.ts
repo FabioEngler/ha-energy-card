@@ -123,7 +123,9 @@ describe('card and editor integration',()=>{
     card.shadowRoot!.querySelector('[aria-label^="Grid:"]')!.dispatchEvent(new MouseEvent('click'));
     let battery=card.shadowRoot!.querySelector('[aria-label^="Battery:"]')!;
     expect(battery.classList.contains('battery-charging')).toBe(true);
-    expect((battery.querySelector('ha-icon') as unknown as {icon:string}).icon).toBe('mdi:battery-charging-60');
+    expect(battery.querySelector('.node-icon')!.getAttribute('data-icon')).toBe('mdi:battery-charging-60');
+    expect(battery.querySelector('.node-icon path')!.getAttribute('d')!.length).toBeGreaterThan(100);
+    expect(card.shadowRoot!.querySelector('foreignObject')).toBeNull();
     battery.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter'}));
     expect(entities).toEqual(['export','charge']);
     card.hass={states:{...states,discharge:{state:'500',attributes:{unit_of_measurement:'W'}},charge:{state:'0',attributes:{unit_of_measurement:'W'}}}};
