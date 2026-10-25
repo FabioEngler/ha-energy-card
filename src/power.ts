@@ -1,10 +1,12 @@
+import type { ColorKey } from './colors';
 export interface EntityState { state: string; attributes: { unit_of_measurement?: string; [key: string]: unknown } }
 export interface Hass { states: Record<string, EntityState>; [key: string]: unknown }
 export interface FlowConfig { entity?: string; import_entity?: string; export_entity?: string; invert?: boolean }
-export interface Consumer { entity: string; name?: string; icon?: string }
+export interface Consumer { entity: string; name?: string; icon?: string; color?: string }
 export interface CardConfig {
   type: string; title?: string; solar_entity?: string; grid?: FlowConfig; battery?: FlowConfig;
   battery_soc_entity?: string; consumers?: Consumer[]; sort_by_power?: boolean; animation?: boolean;
+  colors?: Partial<Record<ColorKey,string>>;
   animation_power_max?: number;
 }
 // All calculations use watts. Source readings must remain unknown when invalid.

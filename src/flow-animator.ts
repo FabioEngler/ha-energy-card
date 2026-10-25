@@ -1,10 +1,10 @@
 import { FlowMotion, MAX_PARTICLES } from './motion';
 
 export const FLOW_GEOMETRY = {
-  'solar-flow': { x1: 230, y1: 139, x2: 230, y2: 192, hubAtEnd: true },
-  'grid-flow': { x1: 113, y1: 192, x2: 230, y2: 192, hubAtEnd: true },
-  'battery-flow': { x1: 230, y1: 245, x2: 230, y2: 192, hubAtEnd: true },
-  'home-flow': { x1: 230, y1: 192, x2: 331, y2: 192, hubAtEnd: false },
+  'solar-flow': { x1:260,y1:172,x2:260,y2:250,hubAtEnd:true },
+  'grid-flow': { x1:152,y1:250,x2:260,y2:250,hubAtEnd:true },
+  'battery-flow': { x1:260,y1:328,x2:260,y2:250,hubAtEnd:true },
+  'home-flow': { x1:260,y1:250,x2:349,y2:250,hubAtEnd:false },
 } as const;
 export type FlowId = keyof typeof FLOW_GEOMETRY;
 interface Stream { motion: FlowMotion; particles: SVGGElement[] }

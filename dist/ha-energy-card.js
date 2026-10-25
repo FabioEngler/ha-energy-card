@@ -77,6 +77,13 @@ If the Work includes a "NOTICE" text file as part of its distribution, then any 
 END OF TERMS AND CONDITIONS
 
 */
+const DEFAULT_COLORS = {
+    solar: '#f6bd4f', grid: '#a99af7', battery: '#53d4bd', home: '#68b7ff',
+    consumers: '#68b7ff', charging: '#4ade80', discharging: '#fb7185',
+};
+const isHexColor = (value) => typeof value === 'string' && /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(value);
+function pickerColor(value) { return value.length === 4 ? '#' + [...value.slice(1)].map(c => c + c).join('') : value; }
+
 /**
  * @license
  * Copyright 2019 Google LLC
@@ -306,10 +313,10 @@ class FlowMotion {
 }
 
 const FLOW_GEOMETRY = {
-    'solar-flow': { x1: 230, y1: 139, x2: 230, y2: 192, hubAtEnd: true },
-    'grid-flow': { x1: 113, y1: 192, x2: 230, y2: 192, hubAtEnd: true },
-    'battery-flow': { x1: 230, y1: 245, x2: 230, y2: 192, hubAtEnd: true },
-    'home-flow': { x1: 230, y1: 192, x2: 331, y2: 192, hubAtEnd: false },
+    'solar-flow': { x1: 260, y1: 172, x2: 260, y2: 250, hubAtEnd: true },
+    'grid-flow': { x1: 152, y1: 250, x2: 260, y2: 250, hubAtEnd: true },
+    'battery-flow': { x1: 260, y1: 328, x2: 260, y2: 250, hubAtEnd: true },
+    'home-flow': { x1: 260, y1: 250, x2: 349, y2: 250, hubAtEnd: false },
 };
 /** One frame loop per visible card. Lit renders sensor values, never animation frames. */
 class FlowAnimator {
@@ -536,6 +543,28 @@ class EnergyFlowEditor extends i$2 {
         consumers[index] = { ...consumers[index], ...patch };
         this.updateConfig({ consumers });
     }
+    colorControl(key, label) {
+        const value = this.config.colors?.[key] || DEFAULT_COLORS[key];
+        const save = (input) => {
+            const hex = input.value.trim();
+            if (hex && !isHexColor(hex)) {
+                input.setCustomValidity('Use #RGB or #RRGGBB');
+                input.reportValidity();
+                return;
+            }
+            input.setCustomValidity('');
+            const colors = { ...this.config.colors };
+            if (hex)
+                colors[key] = hex;
+            else
+                delete colors[key];
+            this.updateConfig({ colors });
+        };
+        return b `<div class="color-row"><label for=${`hex-${key}`}>${label}</label>
+      <input type="color" aria-label=${`${label} picker`} .value=${pickerColor(value)} @input=${(e) => save(e.target)}>
+      <input id=${`hex-${key}`} aria-label=${`${label} hex`} type="text" placeholder=${DEFAULT_COLORS[key]} .value=${this.config.colors?.[key] || ''}
+        @input=${(e) => e.target.setCustomValidity('')} @change=${(e) => save(e.target)}></div>`;
+    }
     render() {
         if (!this.hass || !this.config)
             return A;
@@ -551,10 +580,13 @@ class EnergyFlowEditor extends i$2 {
             this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: next }, bubbles: true, composed: true }));
         })}
       <p>Follow device preference respects reduced motion. Always animate enables moving flow dots even when reduced motion is enabled on this device. Idle flows fade to a stop. Full animation at sets the power where speed, particle density, and brightness reach their limits (default: 10,000 W). Higher readings still display normally.</p>
+      <details><summary>Colors</summary><p>Enter #RGB or #RRGGBB. Clear a hex field to restore its default.</p>
+        ${this.colorControl('solar', 'Solar')}${this.colorControl('grid', 'Grid')}${this.colorControl('battery', 'Battery')}${this.colorControl('home', 'Home')}${this.colorControl('consumers', 'Consumers')}${this.colorControl('charging', 'Charging')}${this.colorControl('discharging', 'Discharging')}
+      </details>
       ${this.source('grid')}${this.source('battery')}
       <h3>Consumers</h3><p>Choose individual, non-overlapping power sensors. Home consumption is calculated automatically.</p>
       ${(this.config.consumers ?? []).map((device, index) => b `<div class="consumer">
-        ${this.form([this.entity('entity', 'Power sensor'), { name: 'name', label: 'Display name', selector: { text: {} } }, { name: 'icon', label: 'Icon', selector: { icon: {} } }], device, data => this.editConsumer(index, data))}
+        ${this.form([this.entity('entity', 'Power sensor'), { name: 'name', label: 'Display name', selector: { text: {} } }, { name: 'icon', label: 'Icon', selector: { icon: {} } }, { name: 'color', label: 'Color (#RRGGBB, optional)', selector: { text: {} } }], device, data => this.editConsumer(index, data))}
         <div class="actions"><button ?disabled=${index === 0} @click=${() => {
             const consumers = [...(this.config.consumers ?? [])];
             [consumers[index - 1], consumers[index]] = [consumers[index], consumers[index - 1]];
@@ -571,6 +603,7 @@ class EnergyFlowEditor extends i$2 {
     </div>`;
     }
     static { this.styles = i$5 `
+    .color-row { display:grid;grid-template-columns:1fr 40px 110px;gap:8px;align-items:center;margin:10px 0; }.color-row input[type=text] { width:100%;box-sizing:border-box;padding:8px;border:1px solid var(--divider-color,#555);border-radius:6px;background:var(--card-background-color);color:var(--primary-text-color);font:inherit; }.color-row input[type=color] { width:36px;height:36px;padding:2px;cursor:pointer; }
     .editor { display:grid;gap:16px; } details { border:1px solid var(--divider-color,#555);border-radius:12px;padding:16px; } summary { cursor:pointer;font-weight:600; } p { font-size:12px;color:var(--secondary-text-color);line-height:1.6; } .check { display:flex;align-items:center;gap:8px;margin:14px 0; } .consumer { padding:16px;border:1px solid var(--divider-color,#555);border-radius:12px; }.actions { display:flex;gap:8px;margin-top:10px; } button { font:inherit;color:var(--primary-color);background:transparent;border:1px solid var(--divider-color,#555);border-radius:6px;padding:8px 12px;cursor:pointer; } button:disabled { opacity:.4; } h3 { margin:0; }
   `; }
 }
@@ -590,7 +623,7 @@ class EnergyFlowCard extends i$2 {
         if (!width)
             return;
         // SVG scales with the card, but text and icons keep readable CSS sizes.
-        const scale = Math.max(1, 460 / width);
+        const scale = Math.max(1, 520 / width);
         if (Math.abs(scale - this.diagramScale) > .001) {
             this.style.setProperty('--ef-diagram-text-scale', String(scale));
             this.diagramScale = scale;
@@ -664,6 +697,19 @@ class EnergyFlowCard extends i$2 {
             throw new Error('Each consumer needs an entity');
         if (config.animation_power_max !== undefined && (!Number.isFinite(config.animation_power_max) || config.animation_power_max <= 0))
             throw new Error('Animation power limit must be a positive number in watts');
+        for (const [key, value] of Object.entries(config.colors ?? {})) {
+            if (!(Object.hasOwn(DEFAULT_COLORS, key)) || (value && !isHexColor(value)))
+                throw new Error('Colors must be hex codes such as #33AABB');
+        }
+        if (config.consumers?.some(c => c.color && !isHexColor(c.color)))
+            throw new Error('Consumer colors must be hex codes such as #33AABB');
+        for (const key of Object.keys(DEFAULT_COLORS)) {
+            const value = config.colors?.[key];
+            if (value)
+                this.style.setProperty(`--ef-${key}`, value);
+            else
+                this.style.removeProperty(`--ef-${key}`);
+        }
         this.clearBalanceTimer();
         this.balanceGrace.reset();
         this.config = { ...config, consumers: config.consumers ?? [] };
@@ -701,7 +747,7 @@ class EnergyFlowCard extends i$2 {
         })}`;
     }
     node(x, y, icon, label, value, color, sub, labelAbove = false, options = {}) {
-        const radius = Math.max(options.home ? 52 : 43, (options.home ? 40 : 36) * this.diagramScale);
+        const radius = Math.max(options.home ? 64 : 52, (options.home ? 48 : 42) * this.diagramScale);
         const iconSize = 24 * this.diagramScale;
         const labelY = labelAbove ? -(radius + 12 * this.diagramScale) : Math.max(options.home ? 77 : 62, radius + 17 * this.diagramScale);
         return w `<g transform=${`translate(${x},${y})`} class=${`flow-node ${options.home ? 'home-node' : ''} ${options.batteryStatus ? `battery-${options.batteryStatus}` : ''} ${options.entity ? 'interactive' : ''}`}
@@ -740,18 +786,18 @@ class EnergyFlowCard extends i$2 {
         const batteryEntity = c$1.battery?.entity || (batteryNet !== null && batteryNet < -1 ? c$1.battery?.export_entity || c$1.battery?.import_entity : c$1.battery?.import_entity || c$1.battery?.export_entity) || c$1.battery_soc_entity;
         return b `<ha-card class=${`motion-${c$1.animation === true ? 'on' : c$1.animation === false ? 'off' : 'auto'}`}>
       <header><div><span class="eyebrow">POWER FLOW</span><h2>${c$1.title || 'Live energy'}</h2></div><span class=${`live ${m.updating ? 'updating' : ''}`}><i></i>${m.updating ? 'Updating' : 'Live'}</span></header>
-      <svg class=${`diagram motion-${c$1.animation === true ? 'on' : c$1.animation === false ? 'off' : 'auto'}`} viewBox="0 0 460 416" role="group" aria-label="Live power flow: solar, grid, battery, and home meet at a shared junction">
+      <svg class=${`diagram motion-${c$1.animation === true ? 'on' : c$1.animation === false ? 'off' : 'auto'}`} viewBox="0 0 520 540" role="group" aria-label="Live power flow: solar, grid, battery, and home meet at a shared junction">
         <defs><radialGradient id="junction-halo"><stop offset="0" stop-color="currentColor" stop-opacity=".8"/><stop offset=".35" stop-color="currentColor" stop-opacity=".25"/><stop offset="1" stop-color="currentColor" stop-opacity="0"/></radialGradient></defs>
         ${this.connection('solar-flow', m.solar, 'var(--ef-solar)')}
         ${this.connection('grid-flow', gridNet, 'var(--ef-grid)')}
         ${batteryPresent ? this.connection('battery-flow', batteryNet, 'var(--ef-battery)') : A}
         ${this.connection('home-flow', m.home, 'var(--ef-home)')}
-        <circle cx="230" cy="192" r="13" class="junction-glow" fill="url(#junction-halo)" opacity="0" aria-hidden="true"/>
-        <circle cx="230" cy="192" r="3.5" class="junction"/>
-        ${this.node(230, 96, 'mdi:solar-power-variant', 'Solar', formatPower(m.solar), 'var(--ef-solar)', 'Production', true, { entity: c$1.solar_entity })}
-        ${this.node(70, 192, 'mdi:transmission-tower', 'Grid', formatPower(gridNet === null ? null : Math.abs(gridNet)), 'var(--ef-grid)', gridNet === null ? 'Unavailable' : gridNet < 0 ? 'Exporting' : gridNet > 0 ? 'Importing' : 'Idle', false, { entity: gridEntity })}
-        ${this.node(390, 192, 'mdi:home-lightning-bolt-outline', 'Home', formatPower(m.home), 'var(--ef-home)', m.updating ? 'Updating' : 'Calculated', false, { home: true, ring: m.sources, homePower: m.home })}
-        ${batteryPresent ? this.node(230, 288, battery.icon, 'Battery', formatPower(batteryNet === null ? null : Math.abs(batteryNet)), 'var(--ef-battery)', soc !== null ? `${Math.round(soc)}%` : c$1.battery_soc_entity ? 'SoC —' : undefined, false, { entity: batteryEntity, batteryStatus: battery.status, statusLabel: battery.label }) : A}
+        <circle cx="260" cy="250" r="13" class="junction-glow" fill="url(#junction-halo)" opacity="0" aria-hidden="true"/>
+        <circle cx="260" cy="250" r="3.5" class="junction"/>
+        ${this.node(260, 120, 'mdi:solar-power-variant', 'Solar', formatPower(m.solar), 'var(--ef-solar)', 'Production', true, { entity: c$1.solar_entity })}
+        ${this.node(100, 250, 'mdi:transmission-tower', 'Grid', formatPower(gridNet === null ? null : Math.abs(gridNet)), 'var(--ef-grid)', gridNet === null ? 'Unavailable' : gridNet < 0 ? 'Exporting' : gridNet > 0 ? 'Importing' : 'Idle', false, { entity: gridEntity })}
+        ${this.node(420, 250, 'mdi:home-lightning-bolt-outline', 'Home', formatPower(m.home), 'var(--ef-home)', m.updating ? 'Updating' : 'Calculated', false, { home: true, ring: m.sources, homePower: m.home })}
+        ${batteryPresent ? this.node(260, 380, battery.icon, 'Battery', formatPower(batteryNet === null ? null : Math.abs(batteryNet)), 'var(--ef-battery)', soc !== null ? `${Math.round(soc)}%` : c$1.battery_soc_entity ? 'SoC —' : undefined, false, { entity: batteryEntity, batteryStatus: battery.status, statusLabel: battery.label }) : A}
       </svg>
       <section class="mix" aria-label="Estimated household power sources">
         <div class="section-title">Home power sources <span>${m.updating ? 'Updating' : 'Estimated mix'}</span></div>
@@ -761,7 +807,7 @@ class EnergyFlowCard extends i$2 {
       </section>
       <section class="consumers">
         <div class="section-title">Consumers <span>${m.consumers.length} ${m.consumers.length === 1 ? 'device' : 'devices'}</span></div>
-        ${c(m.consumers, device => device.entity, device => this.consumer(device.name || String(this.hass.states[device.entity]?.attributes.friendly_name || device.entity), device.power, m.home, { entity: device.entity, icon: device.icon, offline: device.unavailable }))}
+        ${c(m.consumers, device => device.entity, device => this.consumer(device.name || String(this.hass.states[device.entity]?.attributes.friendly_name || device.entity), device.power, m.home, { entity: device.entity, icon: device.icon, offline: device.unavailable, color: device.color }))}
         ${this.consumer('Other consumption', m.other, m.home, { icon: 'mdi:dots-horizontal' })}
         ${m.mismatch ? b `<p class="warning" role="status">Measurements do not balance. Check sensor directions, overlapping consumers, and update timing.</p>` : A}
         ${m.home === null && !m.updating ? b `<p class="warning" role="status">Some source sensors are unavailable or do not report W/kW. Totals that depend on them are unavailable.</p>` : A}
@@ -776,11 +822,11 @@ class EnergyFlowCard extends i$2 {
             : b `<ha-state-icon .hass=${this.hass} .stateObj=${state}></ha-state-icon>`}</span>
       <span class="device"><span class="row"><span class="device-name">${name}${options.offline ? b `<span class="offline-badge" title="No usable power reading. Counted as 0 W.">Offline</span>` : A}</span><strong>${formatPower(power)}</strong></span>
       <span class="row"><span class="track"><span style=${`transform:scaleX(${Math.min(100, share ?? 0) / 100})`}></span></span><small>${formatShare(power, home)}</small></span></span>`;
-        return options.entity ? b `<button class="consumer interactive" type="button" @click=${() => this.moreInfo(options.entity)}>${contents}</button>`
-            : b `<div class="consumer">${contents}</div>`;
+        return options.entity ? b `<button class="consumer interactive" style=${`--consumer-color:${options.color || 'var(--ef-consumers)'}`} type="button" @click=${() => this.moreInfo(options.entity)}>${contents}</button>`
+            : b `<div class="consumer" style="--consumer-color:var(--ef-consumers)">${contents}</div>`;
     }
     static { this.styles = i$5 `
-    :host { --ef-solar:#f6bd4f;--ef-grid:#a99af7;--ef-battery:#53d4bd;--ef-home:#68b7ff;display:block;-webkit-text-size-adjust:100%;text-size-adjust:100%; }
+    :host { --ef-solar:#f6bd4f;--ef-grid:#a99af7;--ef-battery:#53d4bd;--ef-home:#68b7ff;--ef-consumers:#68b7ff;--ef-charging:#4ade80;--ef-discharging:#fb7185;display:block;-webkit-text-size-adjust:100%;text-size-adjust:100%; }
     ha-card { overflow:hidden;background:var(--ha-card-background,var(--card-background-color,#191c24));color:var(--primary-text-color,#eee);border-radius:24px; }
     header { display:flex;align-items:center;justify-content:space-between;padding:24px 24px 0; }
     .eyebrow { font-size:11px;letter-spacing:2px;color:var(--secondary-text-color); } h2 { margin:5px 0;font-size:22px;font-weight:600; }
@@ -790,7 +836,7 @@ class EnergyFlowCard extends i$2 {
     .node { fill:var(--ha-card-background,var(--card-background-color,#191c24));stroke-width:2; }
     .home-node .value { font-size:calc(20px * var(--ef-diagram-text-scale,1));font-weight:750; }.home-node .value.unavailable-value { font-size:calc(13px * var(--ef-diagram-text-scale,1)); }.home-node .node { stroke-width:1.5; }
     .home-ring-track,.home-ring-segment { fill:none;stroke-width:4; }.home-ring-track { stroke:var(--divider-color,#444); }
-    .battery-charging { --battery-state-color:#4ade80; }.battery-discharging { --battery-state-color:#fb7185; }
+    .battery-charging { --battery-state-color:var(--ef-charging); }.battery-discharging { --battery-state-color:var(--ef-discharging); }
     .battery-charging .node,.battery-discharging .node { stroke:var(--battery-state-color);filter:drop-shadow(0 0 6px var(--battery-state-color)); }
     .battery-charging .node-icon,.battery-discharging .node-icon { color:var(--battery-state-color); }
     .battery-status-label { font-size:calc(12px * var(--ef-diagram-text-scale,1));fill:var(--battery-state-color,var(--secondary-text-color,#aaa)); }
@@ -812,7 +858,7 @@ class EnergyFlowCard extends i$2 {
     .device { flex:1;min-width:0; }.row { display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px; }.device-name { display:flex;align-items:center;gap:7px;flex-wrap:wrap;overflow-wrap:anywhere;min-width:0; }
     .row strong { white-space:nowrap;font-size:16px;font-weight:650;font-variant-numeric:tabular-nums; }.row small { width:35px;text-align:right;color:var(--secondary-text-color);font-size:12px;font-variant-numeric:tabular-nums; }
     .offline-badge { border:1px solid var(--divider-color,#555);border-radius:5px;padding:2px 5px;font-size:12px;line-height:1.2;color:var(--secondary-text-color);font-weight:400; }
-    .track { flex:1;height:4px;border-radius:4px;background:var(--divider-color,#333);margin-top:6px;overflow:hidden; }.track span { display:block;width:100%;height:100%;background:var(--ef-home);border-radius:4px;transform-origin:left center;transition:transform .4s cubic-bezier(.22,.61,.36,1); }
+    .track { flex:1;height:4px;border-radius:4px;background:var(--divider-color,#333);margin-top:6px;overflow:hidden; }.track span { display:block;width:100%;height:100%;background:var(--consumer-color,var(--ef-consumers));border-radius:4px;transform-origin:left center;transition:transform .4s cubic-bezier(.22,.61,.36,1); }
     .warning { font-size:12px;color:var(--warning-color,#e7ac55);line-height:1.5; }.empty { padding:24px;line-height:1.6; }
     .motion-off .track span,.motion-off .mix-bar div { transition:none; }
     @media (prefers-reduced-motion:reduce) { .motion-auto .track span,.motion-auto .mix-bar div { transition:none; } }

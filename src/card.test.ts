@@ -157,7 +157,7 @@ describe('card and editor integration',()=>{
     await editor.updateComplete;
     let changed: CardConfig | undefined;
     editor.addEventListener('config-changed',(e:Event)=>{changed=(e as CustomEvent).detail.config;});
-    const checkbox=editor.shadowRoot!.querySelector('input')!;
+    const checkbox=editor.shadowRoot!.querySelector<HTMLInputElement>('input[type=checkbox]')!;
     checkbox.checked=true;checkbox.dispatchEvent(new Event('change'));
     await editor.updateComplete;
     expect(changed?.grid).toEqual({entity:''});
@@ -166,6 +166,22 @@ describe('card and editor integration',()=>{
     expect(schema[0].name).toBe('entity');
     forms[0].dispatchEvent(new CustomEvent('value-changed',{detail:{value:{entity:'sensor.grid',invert:true}}}));
     expect(changed?.grid).toEqual({entity:'sensor.grid',invert:true});
+  });
+  it('saves hex colors, restores defaults, and preserves unrelated settings',async()=>{
+    const editor=document.createElement('energy-flow-card-editor') as Card;
+    editor.setConfig({type:'custom:energy-flow-card',solar_entity:'solar',colors:{grid:'#123456'}});editor.hass=hass;
+    document.body.append(editor);await editor.updateComplete;
+    let config:CardConfig|undefined;
+    editor.addEventListener('config-changed',(e:Event)=>config=(e as CustomEvent).detail.config);
+    const input=editor.shadowRoot!.querySelector('#hex-solar') as HTMLInputElement;
+    input.value='#abc';input.dispatchEvent(new Event('change'));
+    expect(config).toMatchObject({solar_entity:'solar',colors:{solar:'#abc',grid:'#123456'}});
+    const card=document.createElement('energy-flow-card') as Card;
+    card.setConfig(config!);expect(card.style.getPropertyValue('--ef-solar')).toBe('#abc');
+    expect(()=>card.setConfig({...config!,colors:{solar:'red'}})).toThrow('hex');
+    input.value='';input.dispatchEvent(new Event('change'));
+    card.setConfig(config!);expect(card.style.getPropertyValue('--ef-solar')).toBe('');
+    expect(card.style.getPropertyValue('--ef-grid')).toBe('#123456');
   });
   it('stores the animation power ceiling in the visual editor',async()=>{
     const editor=document.createElement('energy-flow-card-editor') as Card;

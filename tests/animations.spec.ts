@@ -176,7 +176,7 @@ test('keeps icons centered and text readable on narrow iPhone cards and after ro
     await page.setViewportSize({width,height:1000});
     await expect.poll(async()=>page.locator('energy-flow-card').evaluate(el=>{
       const root=el.shadowRoot!,diagram=root.querySelector('.diagram') as SVGSVGElement;
-      return Math.abs(Number(el.style.getPropertyValue('--ef-diagram-text-scale') || 1)-Math.max(1,460/diagram.getBoundingClientRect().width));
+      return Math.abs(Number(el.style.getPropertyValue('--ef-diagram-text-scale') || 1)-Math.max(1,520/diagram.getBoundingClientRect().width));
     })).toBeLessThan(.002);
     const geometry=await page.locator('energy-flow-card').evaluate(el=>{
       const root=el.shadowRoot!,diagram=root.querySelector('.diagram')!.getBoundingClientRect();
@@ -187,18 +187,26 @@ test('keeps icons centered and text readable on narrow iPhone cards and after ro
         const parentMatrix=(node as SVGGraphicsElement).getScreenCTM()!;
         const iconSize=iconElement.width.baseVal.value*Math.hypot(parentMatrix.a,parentMatrix.b);
         const path=node.querySelector('.node-icon path')!.getBoundingClientRect();
+        const valueBounds=node.querySelector('.value')!.getBoundingClientRect();
+        const subBounds=node.querySelector('.sub')?.getBoundingClientRect();
         const fonts=Array.from(node.querySelectorAll<SVGTextElement>('text')).map(text=>{
           const matrix=text.getScreenCTM()!;
           const bounds=text.getBoundingClientRect();
           return {className:text.getAttribute('class'),size:parseFloat(getComputedStyle(text).fontSize)*Math.hypot(matrix.a,matrix.b),top:bounds.top,bottom:bounds.bottom};
         });
-        return {circle:circle.toJSON(),icon:icon.toJSON(),iconSize,path:path.toJSON(),fonts,centerError:Math.abs(icon.x+icon.width/2-circle.x-circle.width/2)};
+        return {circle:circle.toJSON(),icon:icon.toJSON(),iconSize,path:path.toJSON(),valueBounds:valueBounds.toJSON(),subBounds:subBounds?.toJSON(),fonts,centerError:Math.abs(icon.x+icon.width/2-circle.x-circle.width/2)};
       });
       return {nodes,diagram:diagram.toJSON(),overflow:document.documentElement.scrollWidth>innerWidth};
     });
     expect(geometry.nodes).toHaveLength(4);
     for(const node of geometry.nodes) {
       expect(node.centerError).toBeLessThan(1);
+      expect(node.circle.width).toBeGreaterThanOrEqual(83.9);
+      for(const rect of [node.valueBounds,node.subBounds].filter(Boolean)) {
+        expect(rect.left).toBeGreaterThan(node.circle.left+2);
+        expect(rect.right).toBeLessThan(node.circle.right-2);
+        expect(rect.bottom).toBeLessThan(node.circle.bottom-3);
+      }
       expect(node.iconSize).toBeGreaterThanOrEqual(23.9);
       expect(node.path.width).toBeGreaterThan(5);expect(node.path.height).toBeGreaterThan(5);
       expect(node.icon.top).toBeGreaterThanOrEqual(node.circle.top-1);
@@ -219,4 +227,18 @@ test('keeps icons centered and text readable on narrow iPhone cards and after ro
   if(await page.evaluate(()=>navigator.maxTouchPoints>0)) await battery.tap();
   else await battery.click();
   expect(await page.evaluate(()=>(window as unknown as DemoWindow).opened.at(-1))).toBe('battery');
+});
+
+ test('applies configured hex colors to circles, mix, particles, consumer bars, and battery glow',async({page})=>{
+  await configure(page,{animation:false,colors:{solar:'#112233',grid:'#334455',home:'#556677',battery:'#778899',consumers:'#aa3399',charging:'#22aa44',discharging:'#dd2244'},consumers:[{entity:'consumer',name:'Washing machine',color:'#123abc'},{entity:'pump',name:'Heat pump'}]});
+  const stroke=(name:string)=>page.locator(`[aria-label^="${name}:"] .node`).evaluate(el=>getComputedStyle(el).stroke);
+  expect(await stroke('Solar')).toBe('rgb(17, 34, 51)');
+  expect(await stroke('Home')).toBe('rgb(85, 102, 119)');
+  expect(await page.locator('[data-flow="solar-flow"]').evaluate(el=>getComputedStyle(el).color)).toBe('rgb(17, 34, 51)');
+  expect(await page.locator('.mix-bar div').first().evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgb(17, 34, 51)');
+  expect(await page.getByRole('button',{name:/Washing machine/}).locator('.track span').evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgb(18, 58, 188)');
+  expect(await page.getByRole('button',{name:/Heat pump/}).locator('.track span').evaluate(el=>getComputedStyle(el).backgroundColor)).toBe('rgb(170, 51, 153)');
+  await update(page,{battery:-300});expect(await stroke('Battery')).toBe('rgb(34, 170, 68)');
+  await update(page,{battery:300});expect(await stroke('Battery')).toBe('rgb(221, 34, 68)');
+  await configure(page,{colors:{}});expect(await stroke('Solar')).toBe('rgb(246, 189, 79)');
 });

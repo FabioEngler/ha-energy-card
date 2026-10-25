@@ -145,3 +145,23 @@ The suite runs desktop Chromium and an iPhone profile in WebKit (Safari's browse
 The build produces one self-contained ES module at `dist/ha-energy-card.js`. Commit the rebuilt bundle whenever the card changes; CI checks that the committed bundle matches the source. Tests cover power balance, units, signed sensors, missing readings, source allocation, and consumer sorting. A real Home Assistant installation is still needed to validate integration and entity selection against your sensors.
 
 Diagram icon paths are bundled from Material Design Icons by Pictogrammers. See [third-party notices](licenses/README.md).
+
+## Colors
+
+Open **Colors** in the visual editor to choose Solar, Grid, Battery, Home, Consumers, Charging, and Discharging colors. Enter `#RGB` or `#RRGGBB`, or use the color picker. Clearing a hex field restores the default. Colors apply consistently to circles, flow particles, source mix, and battery glow. Each consumer also has an optional color override for its bar.
+
+```yaml
+colors:
+  solar: "#FFB300"
+  grid: "#9575CD"
+  battery: "#26A69A"
+  home: "#42A5F5"
+  consumers: "#29B6F6"
+  charging: "#43A047"
+  discharging: "#E53935"
+consumers:
+  - entity: sensor.heat_pump_power
+    color: "#FF7043"
+```
+
+Quote hex values in YAML so `#` is not interpreted as a comment. Larger circles preserve space around readable labels, including on narrow iPhone cards.
