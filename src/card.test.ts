@@ -183,6 +183,21 @@ describe('card and editor integration',()=>{
     card.setConfig(config!);expect(card.style.getPropertyValue('--ef-solar')).toBe('');
     expect(card.style.getPropertyValue('--ef-grid')).toBe('#123456');
   });
+  it('edits battery thresholds and rejects inconsistent ranges',async()=>{
+    const editor=document.createElement('energy-flow-card-editor') as Card;
+    editor.setConfig({type:'custom:energy-flow-card'});editor.hass=hass;document.body.append(editor);await editor.updateComplete;
+    const form=editor.shadowRoot!.querySelector('ha-form')!;
+    expect((form as unknown as {data:CardConfig}).data).toMatchObject({battery_soc_low:20,battery_soc_high:80});
+    let config:CardConfig|undefined;
+    editor.addEventListener('config-changed',(e:Event)=>config=(e as CustomEvent).detail.config);
+    form.dispatchEvent(new CustomEvent('value-changed',{detail:{value:{animation_mode:'auto',battery_soc_low:25,battery_soc_high:85}}}));
+    expect(config).toMatchObject({battery_soc_low:25,battery_soc_high:85});
+    const card=document.createElement('energy-flow-card') as Card;
+    for(const [low,high] of [[-1,80],[20,101],[80,20],[20,20],[NaN,80]]) {
+      expect(()=>card.setConfig({type:'custom:energy-flow-card',battery_soc_low:low,battery_soc_high:high})).toThrow('thresholds');
+    }
+    expect(()=>card.setConfig(config!)).not.toThrow();
+  });
   it('stores the animation power ceiling in the visual editor',async()=>{
     const editor=document.createElement('energy-flow-card-editor') as Card;
     editor.setConfig({type:'custom:energy-flow-card',solar_entity:'solar'});editor.hass=hass;

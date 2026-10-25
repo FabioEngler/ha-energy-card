@@ -242,3 +242,18 @@ test('keeps icons centered and text readable on narrow iPhone cards and after ro
   await update(page,{battery:300});expect(await stroke('Battery')).toBe('rgb(221, 34, 68)');
   await configure(page,{colors:{}});expect(await stroke('Solar')).toBe('rgb(246, 189, 79)');
 });
+
+test('colors the battery icon by charge level independently of its charging glow',async({page})=>{
+  const icon=page.locator('[aria-label^="Battery:"] .node-icon');
+  const iconColor=()=>icon.evaluate(el=>getComputedStyle(el).color);
+  await update(page,{soc:10,battery:-300});
+  expect(await iconColor()).toBe('rgb(239, 83, 80)');
+  expect(await page.locator('[aria-label^="Battery:"] .node').evaluate(el=>getComputedStyle(el).stroke)).toBe('rgb(74, 222, 128)');
+  await update(page,{soc:20,battery:300});expect(await iconColor()).toBe('rgb(255, 179, 0)');
+  await update(page,{soc:80});expect(await iconColor()).toBe('rgb(67, 160, 71)');
+  await configure(page,{battery_soc_low:30,battery_soc_high:90,colors:{battery_low:'#112233',battery_medium:'#445566',battery_high:'#778899'}});
+  expect(await iconColor()).toBe('rgb(68, 85, 102)');
+  await update(page,{soc:29});expect(await iconColor()).toBe('rgb(17, 34, 51)');
+  await update(page,{soc:90});expect(await iconColor()).toBe('rgb(119, 136, 153)');
+  await update(page,{soc:'unavailable'});expect(await iconColor()).toBe('rgb(238, 238, 238)');
+});

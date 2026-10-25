@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { batteryAppearance, formatShare, stateOfCharge } from './presentation';
+import { batteryAppearance, batterySocBand, formatShare, stateOfCharge } from './presentation';
 
 describe('battery presentation', () => {
   it.each([
@@ -32,5 +32,18 @@ describe('consumer percentage labels', () => {
     [null, 400, '—'], [100, null, '—'], [0, 0, '—'],
   ] as const)('formats %s of %s watts', (power, home, expected) => {
     expect(formatShare(power, home)).toBe(expected);
+  });
+});
+
+describe('battery charge color thresholds',()=>{
+  it.each([[0,'low'],[19.99,'low'],[20,'medium'],[79.99,'medium'],[80,'high'],[100,'high'],[null,undefined],[NaN,undefined],[-1,undefined],[101,undefined]] as const)('classifies %s', (soc,band)=>{
+    expect(batterySocBand(soc)).toBe(band);
+  });
+  it('supports custom thresholds and keeps zero red',()=>{
+    expect(batterySocBand(24,25,85)).toBe('low');
+    expect(batterySocBand(25,25,85)).toBe('medium');
+    expect(batterySocBand(84,25,85)).toBe('medium');
+    expect(batterySocBand(85,25,85)).toBe('high');
+    expect(batterySocBand(0,0,80)).toBe('low');
   });
 });

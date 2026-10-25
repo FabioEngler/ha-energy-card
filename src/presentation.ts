@@ -22,3 +22,8 @@ export function formatShare(power: number | null, home: number | null) {
   const share = Math.max(0, power) / home * 100;
   return share > 0 && share < 1 ? '<1%' : `${Math.round(share)}%`;
 }
+
+export function batterySocBand(soc:number|null,low=20,high=80):'low'|'medium'|'high'|undefined {
+  if(soc===null || !Number.isFinite(soc) || soc<0 || soc>100) return undefined;
+  return soc===0 || soc<low ? 'low' : soc>=high ? 'high' : 'medium';
+}

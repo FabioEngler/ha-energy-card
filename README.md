@@ -165,3 +165,18 @@ consumers:
 ```
 
 Quote hex values in YAML so `#` is not interpreted as a comment. Larger circles preserve space around readable labels, including on narrow iPhone cards.
+
+## Battery charge-level colors
+
+The battery **icon** is red below 20%, amber from 20% to below 80%, and green from 80%. Empty (0%) always shows red. Missing or invalid charge readings keep the icon neutral. The surrounding charging/discharging glow remains independent.
+
+Change **Low battery below (%)** and **High battery from (%)** in the visual editor. Low must be smaller than high. Under **Colors**, **Battery low**, **Battery medium**, and **Battery high** accept custom hex codes. Example:
+
+```yaml
+battery_soc_low: 25
+battery_soc_high: 85
+colors:
+  battery_low: "#E53935"
+  battery_medium: "#FFB300"
+  battery_high: "#43A047"
+```

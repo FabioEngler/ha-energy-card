@@ -5,6 +5,7 @@ export interface FlowConfig { entity?: string; import_entity?: string; export_en
 export interface Consumer { entity: string; name?: string; icon?: string; color?: string }
 export interface CardConfig {
   type: string; title?: string; solar_entity?: string; grid?: FlowConfig; battery?: FlowConfig;
+  battery_soc_low?: number; battery_soc_high?: number;
   battery_soc_entity?: string; consumers?: Consumer[]; sort_by_power?: boolean; animation?: boolean;
   colors?: Partial<Record<ColorKey,string>>;
   animation_power_max?: number;

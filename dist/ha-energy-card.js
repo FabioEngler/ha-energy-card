@@ -79,6 +79,7 @@ END OF TERMS AND CONDITIONS
 */
 const DEFAULT_COLORS = {
     solar: '#f6bd4f', grid: '#a99af7', battery: '#53d4bd', home: '#68b7ff',
+    battery_low: '#ef5350', battery_medium: '#ffb300', battery_high: '#43a047',
     consumers: '#68b7ff', charging: '#4ade80', discharging: '#fb7185',
 };
 const isHexColor = (value) => typeof value === 'string' && /^#(?:[0-9a-f]{3}|[0-9a-f]{6})$/i.test(value);
@@ -209,6 +210,11 @@ function formatShare(power, home) {
         return '—';
     const share = Math.max(0, power) / home * 100;
     return share > 0 && share < 1 ? '<1%' : `${Math.round(share)}%`;
+}
+function batterySocBand(soc, low = 20, high = 80) {
+    if (soc === null || !Number.isFinite(soc) || soc < 0 || soc > 100)
+        return undefined;
+    return soc === 0 || soc < low ? 'low' : soc >= high ? 'high' : 'medium';
 }
 
 const BALANCE_GRACE_MS = 3000;
@@ -569,7 +575,7 @@ class EnergyFlowEditor extends i$2 {
         if (!this.hass || !this.config)
             return A;
         return b `<div class="editor">
-      ${this.form([{ name: 'title', label: 'Title', selector: { text: {} } }, this.entity('solar_entity', 'Solar production'), this.entity('battery_soc_entity', 'Battery state of charge', true), { name: 'animation_mode', label: 'Flow animation', selector: { select: { options: [{ value: 'auto', label: 'Follow device preference' }, { value: 'on', label: 'Always animate' }, { value: 'off', label: 'Off' }] } } }, { name: 'animation_power_max', label: 'Full animation at (W)', selector: { number: { min: 100, max: 1000000, step: 100, mode: 'box', unit_of_measurement: 'W' } } }, { name: 'sort_by_power', label: 'Sort consumers by current power', selector: { boolean: {} } }], { ...this.config, animation_power_max: this.config.animation_power_max ?? DEFAULT_ANIMATION_POWER_MAX, animation_mode: this.config.animation === true ? 'on' : this.config.animation === false ? 'off' : 'auto' }, data => {
+      ${this.form([{ name: 'title', label: 'Title', selector: { text: {} } }, this.entity('solar_entity', 'Solar production'), this.entity('battery_soc_entity', 'Battery state of charge', true), { name: 'battery_soc_low', label: 'Low battery below (%)', selector: { number: { min: 0, max: 99, step: 1, mode: 'box' } } }, { name: 'battery_soc_high', label: 'High battery from (%)', selector: { number: { min: 1, max: 100, step: 1, mode: 'box' } } }, { name: 'animation_mode', label: 'Flow animation', selector: { select: { options: [{ value: 'auto', label: 'Follow device preference' }, { value: 'on', label: 'Always animate' }, { value: 'off', label: 'Off' }] } } }, { name: 'animation_power_max', label: 'Full animation at (W)', selector: { number: { min: 100, max: 1000000, step: 100, mode: 'box', unit_of_measurement: 'W' } } }, { name: 'sort_by_power', label: 'Sort consumers by current power', selector: { boolean: {} } }], { ...this.config, battery_soc_low: this.config.battery_soc_low ?? 20, battery_soc_high: this.config.battery_soc_high ?? 80, animation_power_max: this.config.animation_power_max ?? DEFAULT_ANIMATION_POWER_MAX, animation_mode: this.config.animation === true ? 'on' : this.config.animation === false ? 'off' : 'auto' }, data => {
             const { animation_mode, ...config } = data;
             const next = { ...this.config, ...config };
             if (animation_mode === 'auto')
@@ -579,9 +585,10 @@ class EnergyFlowEditor extends i$2 {
             this.config = next;
             this.dispatchEvent(new CustomEvent('config-changed', { detail: { config: next }, bubbles: true, composed: true }));
         })}
+      <p>Battery icon colors follow state of charge: red below the low threshold, amber in between, green from the high threshold. Charging/discharging glow is independent.</p>
       <p>Follow device preference respects reduced motion. Always animate enables moving flow dots even when reduced motion is enabled on this device. Idle flows fade to a stop. Full animation at sets the power where speed, particle density, and brightness reach their limits (default: 10,000 W). Higher readings still display normally.</p>
       <details><summary>Colors</summary><p>Enter #RGB or #RRGGBB. Clear a hex field to restore its default.</p>
-        ${this.colorControl('solar', 'Solar')}${this.colorControl('grid', 'Grid')}${this.colorControl('battery', 'Battery')}${this.colorControl('home', 'Home')}${this.colorControl('consumers', 'Consumers')}${this.colorControl('charging', 'Charging')}${this.colorControl('discharging', 'Discharging')}
+        ${this.colorControl('solar', 'Solar')}${this.colorControl('grid', 'Grid')}${this.colorControl('battery', 'Battery')}${this.colorControl('home', 'Home')}${this.colorControl('consumers', 'Consumers')}${this.colorControl('charging', 'Charging')}${this.colorControl('discharging', 'Discharging')}${this.colorControl('battery_low', 'Battery low')}${this.colorControl('battery_medium', 'Battery medium')}${this.colorControl('battery_high', 'Battery high')}
       </details>
       ${this.source('grid')}${this.source('battery')}
       <h3>Consumers</h3><p>Choose individual, non-overlapping power sensors. Home consumption is calculated automatically.</p>
@@ -697,6 +704,9 @@ class EnergyFlowCard extends i$2 {
             throw new Error('Each consumer needs an entity');
         if (config.animation_power_max !== undefined && (!Number.isFinite(config.animation_power_max) || config.animation_power_max <= 0))
             throw new Error('Animation power limit must be a positive number in watts');
+        const low = config.battery_soc_low ?? 20, high = config.battery_soc_high ?? 80;
+        if (!Number.isFinite(low) || !Number.isFinite(high) || low < 0 || high > 100 || low >= high)
+            throw new Error('Battery thresholds require 0 <= low < high <= 100');
         for (const [key, value] of Object.entries(config.colors ?? {})) {
             if (!(Object.hasOwn(DEFAULT_COLORS, key)) || (value && !isHexColor(value)))
                 throw new Error('Colors must be hex codes such as #33AABB');
@@ -750,7 +760,7 @@ class EnergyFlowCard extends i$2 {
         const radius = Math.max(options.home ? 64 : 52, (options.home ? 48 : 42) * this.diagramScale);
         const iconSize = 24 * this.diagramScale;
         const labelY = labelAbove ? -(radius + 12 * this.diagramScale) : Math.max(options.home ? 77 : 62, radius + 17 * this.diagramScale);
-        return w `<g transform=${`translate(${x},${y})`} class=${`flow-node ${options.home ? 'home-node' : ''} ${options.batteryStatus ? `battery-${options.batteryStatus}` : ''} ${options.entity ? 'interactive' : ''}`}
+        return w `<g transform=${`translate(${x},${y})`} class=${`flow-node ${options.home ? 'home-node' : ''} ${options.batteryStatus ? `battery-${options.batteryStatus}` : ''} ${options.batteryLevel ? `battery-soc-${options.batteryLevel}` : ''} ${options.entity ? 'interactive' : ''}`}
       role=${options.entity ? 'button' : A} tabindex=${options.entity ? '0' : A}
       aria-label=${`${label}: ${value}${sub ? `, ${sub}` : ''}${options.statusLabel ? `, ${options.statusLabel}` : ''}${options.entity ? '. Open entity details' : ''}`}
       @click=${() => this.moreInfo(options.entity)} @keydown=${(e) => {
@@ -797,7 +807,7 @@ class EnergyFlowCard extends i$2 {
         ${this.node(260, 120, 'mdi:solar-power-variant', 'Solar', formatPower(m.solar), 'var(--ef-solar)', 'Production', true, { entity: c$1.solar_entity })}
         ${this.node(100, 250, 'mdi:transmission-tower', 'Grid', formatPower(gridNet === null ? null : Math.abs(gridNet)), 'var(--ef-grid)', gridNet === null ? 'Unavailable' : gridNet < 0 ? 'Exporting' : gridNet > 0 ? 'Importing' : 'Idle', false, { entity: gridEntity })}
         ${this.node(420, 250, 'mdi:home-lightning-bolt-outline', 'Home', formatPower(m.home), 'var(--ef-home)', m.updating ? 'Updating' : 'Calculated', false, { home: true, ring: m.sources, homePower: m.home })}
-        ${batteryPresent ? this.node(260, 380, battery.icon, 'Battery', formatPower(batteryNet === null ? null : Math.abs(batteryNet)), 'var(--ef-battery)', soc !== null ? `${Math.round(soc)}%` : c$1.battery_soc_entity ? 'SoC —' : undefined, false, { entity: batteryEntity, batteryStatus: battery.status, statusLabel: battery.label }) : A}
+        ${batteryPresent ? this.node(260, 380, battery.icon, 'Battery', formatPower(batteryNet === null ? null : Math.abs(batteryNet)), 'var(--ef-battery)', soc !== null ? `${Math.round(soc)}%` : c$1.battery_soc_entity ? 'SoC —' : undefined, false, { entity: batteryEntity, batteryStatus: battery.status, batteryLevel: batterySocBand(soc, c$1.battery_soc_low, c$1.battery_soc_high), statusLabel: battery.label }) : A}
       </svg>
       <section class="mix" aria-label="Estimated household power sources">
         <div class="section-title">Home power sources <span>${m.updating ? 'Updating' : 'Estimated mix'}</span></div>
@@ -838,7 +848,9 @@ class EnergyFlowCard extends i$2 {
     .home-ring-track,.home-ring-segment { fill:none;stroke-width:4; }.home-ring-track { stroke:var(--divider-color,#444); }
     .battery-charging { --battery-state-color:var(--ef-charging); }.battery-discharging { --battery-state-color:var(--ef-discharging); }
     .battery-charging .node,.battery-discharging .node { stroke:var(--battery-state-color);filter:drop-shadow(0 0 6px var(--battery-state-color)); }
-    .battery-charging .node-icon,.battery-discharging .node-icon { color:var(--battery-state-color); }
+    .battery-soc-low .node-icon { color:var(--ef-battery_low,#ef5350); }
+    .battery-soc-medium .node-icon { color:var(--ef-battery_medium,#ffb300); }
+    .battery-soc-high .node-icon { color:var(--ef-battery_high,#43a047); }
     .battery-status-label { font-size:calc(12px * var(--ef-diagram-text-scale,1));fill:var(--battery-state-color,var(--secondary-text-color,#aaa)); }
     .interactive { cursor:pointer; }.flow-node:focus-visible { outline:none; }.flow-node:focus-visible .node { stroke-width:4;stroke:var(--primary-color,#68b7ff); }
     text { fill:var(--primary-text-color,#eee);text-anchor:middle;font-family:inherit; }.value { font-size:calc(15px * var(--ef-diagram-text-scale,1));font-weight:600;font-variant-numeric:tabular-nums; }.value.unavailable-value { font-size:calc(12px * var(--ef-diagram-text-scale,1)); }.sub { font-size:calc(12px * var(--ef-diagram-text-scale,1));fill:var(--secondary-text-color,#aaa); }.label { font-size:calc(13px * var(--ef-diagram-text-scale,1));fill:var(--secondary-text-color,#aaa); }

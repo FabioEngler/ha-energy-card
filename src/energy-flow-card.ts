@@ -2,7 +2,7 @@ import { DEFAULT_COLORS, isHexColor, type ColorKey } from './colors';
 import { LitElement, html, css, svg, nothing } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 import { calculate, formatPower, type CardConfig, type Hass } from './power';
-import { batteryAppearance, formatShare, stateOfCharge } from './presentation';
+import { batteryAppearance, batterySocBand, formatShare, stateOfCharge } from './presentation';
 import { BalanceGracePeriod } from './balance';
 import { FlowAnimator, FLOW_GEOMETRY, type FlowId } from './flow-animator';
 import { DEFAULT_ANIMATION_POWER_MAX, MAX_PARTICLES, powerEnvelope } from './motion';
@@ -13,6 +13,7 @@ interface NodeOptions {
   entity?: string;
   home?: boolean;
   batteryStatus?: string;
+  batteryLevel?: string;
   statusLabel?: string;
   ring?: ReturnType<typeof calculate>['sources'];
   homePower?: number | null;
@@ -102,6 +103,8 @@ class EnergyFlowCard extends LitElement {
     if (!config || typeof config !== 'object') throw new Error('A card configuration is required');
     if (config.consumers && (!Array.isArray(config.consumers) || config.consumers.some(c => !c.entity))) throw new Error('Each consumer needs an entity');
     if (config.animation_power_max !== undefined && (!Number.isFinite(config.animation_power_max) || config.animation_power_max <= 0)) throw new Error('Animation power limit must be a positive number in watts');
+    const low=config.battery_soc_low ?? 20, high=config.battery_soc_high ?? 80;
+    if(!Number.isFinite(low) || !Number.isFinite(high) || low<0 || high>100 || low>=high) throw new Error('Battery thresholds require 0 <= low < high <= 100');
     for (const [key,value] of Object.entries(config.colors ?? {})) {
       if (!(Object.hasOwn(DEFAULT_COLORS,key)) || (value && !isHexColor(value))) throw new Error('Colors must be hex codes such as #33AABB');
     }
@@ -150,7 +153,7 @@ class EnergyFlowCard extends LitElement {
     const radius = Math.max(options.home ? 64 : 52, (options.home ? 48 : 42) * this.diagramScale);
     const iconSize = 24 * this.diagramScale;
     const labelY = labelAbove ? -(radius + 12 * this.diagramScale) : Math.max(options.home ? 77 : 62, radius + 17 * this.diagramScale);
-    return svg`<g transform=${`translate(${x},${y})`} class=${`flow-node ${options.home ? 'home-node' : ''} ${options.batteryStatus ? `battery-${options.batteryStatus}` : ''} ${options.entity ? 'interactive' : ''}`}
+    return svg`<g transform=${`translate(${x},${y})`} class=${`flow-node ${options.home ? 'home-node' : ''} ${options.batteryStatus ? `battery-${options.batteryStatus}` : ''} ${options.batteryLevel ? `battery-soc-${options.batteryLevel}` : ''} ${options.entity ? 'interactive' : ''}`}
       role=${options.entity ? 'button' : nothing} tabindex=${options.entity ? '0' : nothing}
       aria-label=${`${label}: ${value}${sub ? `, ${sub}` : ''}${options.statusLabel ? `, ${options.statusLabel}` : ''}${options.entity ? '. Open entity details' : ''}`}
       @click=${() => this.moreInfo(options.entity)} @keydown=${(e: KeyboardEvent) => {
@@ -192,7 +195,7 @@ class EnergyFlowCard extends LitElement {
         ${this.node(260, 120, 'mdi:solar-power-variant', 'Solar', formatPower(m.solar), 'var(--ef-solar)', 'Production', true, { entity: c.solar_entity })}
         ${this.node(100, 250, 'mdi:transmission-tower', 'Grid', formatPower(gridNet === null ? null : Math.abs(gridNet)), 'var(--ef-grid)', gridNet === null ? 'Unavailable' : gridNet < 0 ? 'Exporting' : gridNet > 0 ? 'Importing' : 'Idle', false, { entity: gridEntity })}
         ${this.node(420, 250, 'mdi:home-lightning-bolt-outline', 'Home', formatPower(m.home), 'var(--ef-home)', m.updating ? 'Updating' : 'Calculated', false, { home: true, ring: m.sources, homePower: m.home })}
-        ${batteryPresent ? this.node(260, 380, battery.icon, 'Battery', formatPower(batteryNet === null ? null : Math.abs(batteryNet)), 'var(--ef-battery)', soc !== null ? `${Math.round(soc)}%` : c.battery_soc_entity ? 'SoC —' : undefined, false, { entity: batteryEntity, batteryStatus: battery.status, statusLabel: battery.label }) : nothing}
+        ${batteryPresent ? this.node(260, 380, battery.icon, 'Battery', formatPower(batteryNet === null ? null : Math.abs(batteryNet)), 'var(--ef-battery)', soc !== null ? `${Math.round(soc)}%` : c.battery_soc_entity ? 'SoC —' : undefined, false, { entity: batteryEntity, batteryStatus: battery.status, batteryLevel: batterySocBand(soc,c.battery_soc_low,c.battery_soc_high), statusLabel: battery.label }) : nothing}
       </svg>
       <section class="mix" aria-label="Estimated household power sources">
         <div class="section-title">Home power sources <span>${m.updating ? 'Updating' : 'Estimated mix'}</span></div>
@@ -233,7 +236,9 @@ class EnergyFlowCard extends LitElement {
     .home-ring-track,.home-ring-segment { fill:none;stroke-width:4; }.home-ring-track { stroke:var(--divider-color,#444); }
     .battery-charging { --battery-state-color:var(--ef-charging); }.battery-discharging { --battery-state-color:var(--ef-discharging); }
     .battery-charging .node,.battery-discharging .node { stroke:var(--battery-state-color);filter:drop-shadow(0 0 6px var(--battery-state-color)); }
-    .battery-charging .node-icon,.battery-discharging .node-icon { color:var(--battery-state-color); }
+    .battery-soc-low .node-icon { color:var(--ef-battery_low,#ef5350); }
+    .battery-soc-medium .node-icon { color:var(--ef-battery_medium,#ffb300); }
+    .battery-soc-high .node-icon { color:var(--ef-battery_high,#43a047); }
     .battery-status-label { font-size:calc(12px * var(--ef-diagram-text-scale,1));fill:var(--battery-state-color,var(--secondary-text-color,#aaa)); }
     .interactive { cursor:pointer; }.flow-node:focus-visible { outline:none; }.flow-node:focus-visible .node { stroke-width:4;stroke:var(--primary-color,#68b7ff); }
     text { fill:var(--primary-text-color,#eee);text-anchor:middle;font-family:inherit; }.value { font-size:calc(15px * var(--ef-diagram-text-scale,1));font-weight:600;font-variant-numeric:tabular-nums; }.value.unavailable-value { font-size:calc(12px * var(--ef-diagram-text-scale,1)); }.sub { font-size:calc(12px * var(--ef-diagram-text-scale,1));fill:var(--secondary-text-color,#aaa); }.label { font-size:calc(13px * var(--ef-diagram-text-scale,1));fill:var(--secondary-text-color,#aaa); }
